@@ -3,10 +3,25 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import { applyMiddleware, combineReducers, createStore} from 'redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
+import thunk from 'redux-thunk';
+
+const history = createBrowserHistory();
+const rootReducer = combineReducers({
+    router: connectRouter(history)
+})
+
+const store = createStore(rootReducer,
+    applyMiddleware(thunk, routerMiddleware(history)))
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App history={history}/>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
