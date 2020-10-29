@@ -8,11 +8,11 @@ function App(props) {
     <ConnectedRouter history={props.history}>
       <div className="App">
         <Switch>
-          <Route path='/' exact render={() => <div>main page</div>} />
+          <Route path='/' exact render={() => <div>asapgo</div>}/>
         </Switch>
       </div>
     </ConnectedRouter>
-    );
+  );
 }
 
 export default App;
