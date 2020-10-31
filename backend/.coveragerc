@@ -1,0 +1,2 @@
+[report]
+omit = */migrations/*, manage.py, */asgi.py, */wsgi.py, plan/apps.py, plan/views.py
