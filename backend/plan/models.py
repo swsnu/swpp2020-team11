@@ -24,7 +24,7 @@ class Features(models.Model):
 class Place(models.Model):
   latitude = models.FloatField()
   longitude = models.FloatField()
-  Type = models.CharField(max_length=64)
+  type = models.CharField(max_length=64)
   features = models.ManyToManyField(
     Features,
     related_name = 'features'
