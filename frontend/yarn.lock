@@ -10455,6 +10455,11 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
+redux-csrf@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/redux-csrf/-/redux-csrf-1.1.0.tgz#1f146681e79059a740c72f27b91117d313777a7d"
+  integrity sha1-HxRmgeeQWadAxy8nuREX0xN3en0=
+
 redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
