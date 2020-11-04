@@ -23,6 +23,7 @@ module.exports = {
     'max-len': ['error', { 'code': 90 }],
     'indent': ['error', 2, { 'SwitchCase': 1 }],
     'object-curly-spacing': ['error', 'always'],
+    'react/prop-types': 0,
     'require-jsdoc': ['error', {
       'require': {
         'FunctionDeclaration': false,
@@ -38,4 +39,5 @@ module.exports = {
       'version': 'detect',
     },
   },
+  'parser': 'babel-eslint',
 };
