@@ -20,6 +20,18 @@ module.exports = {
     'react',
   ],
   'rules': {
+    'max-len': ['error', { 'code': 90 }],
+    'indent': ['error', 2, { 'SwitchCase': 1 }],
+    'object-curly-spacing': ['error', 'always'],
+    'require-jsdoc': ['error', {
+      'require': {
+        'FunctionDeclaration': false,
+        'MethodDefinition': false,
+        'ClassDeclaration': false,
+        'ArrowFunctionExpression': false,
+        'FunctionExpression': false,
+      },
+    }],
   },
   'settings': {
     'react': {
