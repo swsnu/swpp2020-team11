@@ -1,10 +1,8 @@
-from django.http import HttpResponse, JsonResponse
-
-from common.util.auth_util import login_required
-from common.util.http_util import HttpStatusCode
-
+from django.http import HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
+from common.util.auth_util import login_required
+from common.util.http_util import HttpStatusCode
 
 
 # dummy plan function for test

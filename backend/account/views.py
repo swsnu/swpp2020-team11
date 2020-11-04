@@ -1,15 +1,16 @@
+import json
+import random
+import string
+
 from django.http import HttpResponse, JsonResponse
 from django.contrib import auth
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
 
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
 from .models import User
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_http_methods
-import json
-import random
-import string
 
 
 # Dummy function to check other functions
@@ -21,7 +22,7 @@ def sign_in(request):
     password = req_data.get('password', None)
     # create dummy nickname and email
     nickname = ''
-    for i in range(10):
+    for _ in range(10):
         nickname += random.choice(string.ascii_lowercase)
     email = nickname + '@gmail.com'
     user = User.objects.create_user(email, nickname, password, '010-1234-1234')
