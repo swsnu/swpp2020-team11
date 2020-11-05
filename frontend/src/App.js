@@ -13,8 +13,6 @@ function App(props) {
         <Header/>
         <Switch>
           <Route path='/' exact component={ Main }/>
-          <Route path='/sign_in/' exact component={ SignIn }/>
-          <Route path='/plan/' exact render={() => <div>plan page</div>}/>
         </Switch>
       </div>
     </ConnectedRouter>
