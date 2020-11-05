@@ -15,7 +15,7 @@ export const getHistory = () => {
 
 export const getReservation = (user) => {
   return (dispatch) => {
-    return axios.get('/api/plan/reservation')
+    return axios.get('/api/reservation')
       .then((res) => {
         dispatch({ type: actionTypes.GetReservation, value: res.data });
         dispatch(push('/plan/reservation'));
