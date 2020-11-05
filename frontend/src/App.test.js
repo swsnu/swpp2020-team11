@@ -1,17 +1,14 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import App from './App';
-import { Provider } from 'react-redux';
-import { getMockStore } from './test-utils/mocks';
-import { history } from './store/store';
-
-const stubInitialState = {};
-
-const mockStore = getMockStore(stubInitialState);
+import { shallow } from 'enzyme';
 
 
+describe('<App />', () => {
+  it('renders without crashing', () => {
+    const component = shallow(<App/>);
+    const wrapper = component.find('.App');
+    expect(wrapper.find('.App')).toHaveLength(1);
+  });
+});
 test('renders learn react link', () => {
-  render(<Provider store={mockStore}>
-    <App history={history}/>
-  </Provider>);
 });

@@ -1,6 +1,6 @@
 from django.urls import path
-from plan import views
+from .views import plan
 
 urlpatterns = [
-    path('place/', views.place, name='place')
+    path('', plan, name='plan'),
 ]

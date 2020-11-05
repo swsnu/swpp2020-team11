@@ -1,0 +1,12 @@
+[MASTER]
+# disable docstring
+disable=C0114,C0115,C0116
+
+# ignore migration file
+ignore-patterns=\d{4}_.*?.py
+
+# ignore manage.py
+ignore = manage.py
+
+# import root directory to recognize module outside from app is valid
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
