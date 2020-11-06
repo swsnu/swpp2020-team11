@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib import auth
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
+from django.core.exceptions import ObjectDoesNotExist
 
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
@@ -13,25 +14,19 @@ from common.util.http_util import HttpStatusCode
 from .models import User
 
 
-# Dummy function to check other functions
+
 @ensure_csrf_cookie
 @require_http_methods(['POST'])
 def sign_in(request):
     req_data = json.loads(request.body.decode())
     email = req_data.get('email', None)
     password = req_data.get('password', None)
-    # create dummy nickname and email
-    nickname = ''
-    for _ in range(10):
-        nickname += random.choice(string.ascii_lowercase)
-    email = nickname + '@gmail.com'
-    user = User.objects.create_user(email, nickname, password, '010-1234-1234')
-    # try:
-    #     user = User.objects.get(username=username)
-    # except ObjectDoesNotExist:
-    #     return HttpResponse(status=HttpStatusCode.UnAuthorzied)
-    # if not user.check_password(raw_password=password):
-    #     return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+    try:
+        user = User.objects.get(email=email)
+    except ObjectDoesNotExist:
+        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+    if not user.check_password(raw_password=password):
+        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
     auth.login(request, user)
     return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
 
@@ -42,3 +37,21 @@ def sign_in(request):
 def sign_out(request):
     auth.logout(request)
     return HttpResponse(status=HttpStatusCode.NoContent)
+
+
+@ensure_csrf_cookie
+@require_http_methods(['GET', 'POST'])
+def sign_up(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            return JsonResponse(request.user.as_dict(), status=HttpStatusCode.OK)
+    else:
+        req_data = json.loads(request.body.decode())
+        email = req_data.get('email', None)
+        #TODO check email overlap
+        nickname = req_data.get('nickname', None)
+        password = req_data.get('password', None)
+        phone_number = req_data.get('phone_number', None)
+        #TODO check phone_number exists or not
+        new_user = User.objects.create_user(email, nickname, password, phone_number)
+        return JsonResponse(new_user.as_dict(), status=HttpStatusCode.Created)

@@ -31,3 +31,9 @@ export const signOut = () => {
       .catch((err) => console.log(err));
   };
 };
+
+export const signUp = (email, nickname, password, phone_number) => {
+  return (dispatch) => {
+    return axios.post('')
+  };
+};
