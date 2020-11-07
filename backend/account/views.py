@@ -45,13 +45,19 @@ def sign_up(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
             return JsonResponse(request.user.as_dict(), status=HttpStatusCode.OK)
-    else:
-        req_data = json.loads(request.body.decode())
-        email = req_data.get('email', None)
-        #TODO check email overlap
+        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+
+    req_data = json.loads(request.body.decode())
+    email = req_data.get('email', None)
+    try:
+        User.objects.get(email=email)
+        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+    except ObjectDoesNotExist:
         nickname = req_data.get('nickname', None)
         password = req_data.get('password', None)
-        phone_number = req_data.get('phone_number', None)
-        #TODO check phone_number exists or not
+        try:
+            phone_number = req_data.get('phoneNumber', None)
+        except ObjectDoesNotExist:
+            phone_number = None
         new_user = User.objects.create_user(email, nickname, password, phone_number)
         return JsonResponse(new_user.as_dict(), status=HttpStatusCode.Created)

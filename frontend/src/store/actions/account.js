@@ -2,6 +2,9 @@ import * as actionTypes from './actionTypes';
 import axios from 'axios';
 import { push } from 'connected-react-router';
 
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
 export const signIn = (email, password) => {
   return (dispatch) => {
     return axios.post('/api/user/login/', {
@@ -23,7 +26,7 @@ export const signIn = (email, password) => {
 
 export const signOut = () => {
   return (dispatch) => {
-    return axios.get('/api/user/logout')
+    return axios.get('/api/user/logout/')
       .then((res) => {
         dispatch({ type: actionTypes.SignOut });
         dispatch(push('/'));
@@ -32,8 +35,23 @@ export const signOut = () => {
   };
 };
 
-export const signUp = (email, nickname, password, phone_number) => {
+
+export const signUp = (email, nickname, password, phoneNumber) => {
   return (dispatch) => {
-    return axios.post('')
+    return axios.post('/api/user/', {
+      email: email,
+      password: password,
+      nickname: nickname,
+      phoneNumber: phoneNumber,
+    })
+      .then((res) => {
+        if (res.status === 201) {
+          dispatch({ type: actionTypes.SignUp, value: res.data });
+          // dispatch(push('/'));
+        } else {
+          alert('This Email is already taken.');
+        }
+      })
+      .catch((err) => console.log(err));
   };
 };

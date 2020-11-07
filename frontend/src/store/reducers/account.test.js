@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import reducer from './account';
 import * as actionTypes from '../actions/actionTypes';
 
