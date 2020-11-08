@@ -1,11 +1,11 @@
 import json
-import random
-import string
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
 from django.contrib import auth
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
+from django.db import IntegrityError
 
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
@@ -16,24 +16,36 @@ from .models import User
 # Dummy function to check other functions
 @ensure_csrf_cookie
 @require_http_methods(['POST'])
+def user(request):
+    req_data = json.loads(request.body.decode())
+    email = req_data.get('email', None)
+    password = req_data.get('password', None)
+    phone_number = req_data.get('phone_number', "")
+    nickname = req_data.get('nickname', None)
+    if email is None or password is None or nickname is None:
+        return HttpResponse(status=HttpStatusCode.Forbidden)
+    try:
+        User.objects.create_user(email=email, password=password, nickname=nickname, phone_number=phone_number)
+    except IntegrityError:
+        return HttpResponse(status=HttpStatusCode.Forbidden)
+    return HttpResponse(status=HttpStatusCode.Created)
+
+
+# Dummy function to check other functions
+@ensure_csrf_cookie
+@require_http_methods(['POST'])
 def sign_in(request):
     req_data = json.loads(request.body.decode())
     email = req_data.get('email', None)
     password = req_data.get('password', None)
-    # create dummy nickname and email
-    nickname = ''
-    for _ in range(10):
-        nickname += random.choice(string.ascii_lowercase)
-    email = nickname + '@gmail.com'
-    user = User.objects.create_user(email, nickname, password, '010-1234-1234')
-    # try:
-    #     user = User.objects.get(username=username)
-    # except ObjectDoesNotExist:
-    #     return HttpResponse(status=HttpStatusCode.UnAuthorzied)
-    # if not user.check_password(raw_password=password):
-    #     return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+    try:
+        user = User.objects.get(email=email)
+    except ObjectDoesNotExist:
+        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+    if not user.check_password(raw_password=password):
+        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
     auth.login(request, user)
-    return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
+    return HttpResponse(status=HttpStatusCode.NoContent)
 
 
 @ensure_csrf_cookie
