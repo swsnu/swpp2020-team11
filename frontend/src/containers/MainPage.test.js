@@ -72,7 +72,6 @@ describe('<MainPage />', () => {
   it('should save headcount if user set head count.', () => {
     const component = mount(mainPage(stubInitialState));
     const inputNumber = component.find('input').at(0);
-    console.log(inputNumber.instance());
     const wrapper = component.find('MainPage').instance();
     inputNumber.simulate('change', { target: { value: '3' } });
     expect(wrapper.state.headCount).toBe(3);
