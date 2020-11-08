@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 const { Paragraph } = Typography;
 
-class Main extends Component {
+class MainPage extends Component {
   state = {
     headCount: 2,
   }
@@ -47,4 +47,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(withRouter(Main));
+export default connect(null, mapDispatchToProps)(withRouter(MainPage));

@@ -7,8 +7,8 @@ import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 class Header extends Component {
   render() {
     return (
-      <div className="MainPage">
-        <div
+      <div className="Header">
+        <div className="LogoImage"
           onClick={() => this.props.history.push('/')}
         >
           AsapGo
@@ -35,7 +35,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSignIn: () => dispatch(actionCreators.signIn()),
     onSignOut: () => dispatch(actionCreators.signOut()),
   };
 };
