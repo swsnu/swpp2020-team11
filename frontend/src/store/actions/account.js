@@ -53,11 +53,15 @@ export const signUp = (email, nickname, password, phoneNumber) => {
       .then((res) => {
         if (res.status === 201) {
           dispatch({ type: actionTypes.SignUp, value: res.data });
-          // dispatch(push('/'));
-        } else {
-          alert('This Email is already taken.');
+          dispatch(push('/'));
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err.response.status == 401) {
+          alert('This Email is already taken.');
+        } else {
+          console.log(err);
+        }
+      });
   };
 };
