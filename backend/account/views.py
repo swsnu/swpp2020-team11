@@ -24,9 +24,9 @@ def sign_in(request):
     try:
         user = User.objects.get(email=email)
     except ObjectDoesNotExist:
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        return HttpResponse(status=HttpStatusCode.NoContent)
     if not user.check_password(raw_password=password):
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        return HttpResponse(status=HttpStatusCode.UnAuthorized)
     auth.login(request, user)
     return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
 
@@ -45,19 +45,16 @@ def sign_up(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
             return JsonResponse(request.user.as_dict(), status=HttpStatusCode.OK)
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        return HttpResponse(status=HttpStatusCode.UnAuthorized)
 
     req_data = json.loads(request.body.decode())
     email = req_data.get('email', None)
     try:
-        User.objects.get(email=email)
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        if User.objects.get(email=email):
+            return HttpResponse(status=HttpStatusCode.UnAuthorized)
     except ObjectDoesNotExist:
         nickname = req_data.get('nickname', None)
         password = req_data.get('password', None)
-        try:
-            phone_number = req_data.get('phoneNumber', None)
-        except ObjectDoesNotExist:
-            phone_number = None
+        phone_number = req_data.get('phoneNumber', "")
         new_user = User.objects.create_user(email, nickname, password, phone_number)
         return JsonResponse(new_user.as_dict(), status=HttpStatusCode.Created)

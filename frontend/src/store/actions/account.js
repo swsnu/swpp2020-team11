@@ -19,7 +19,13 @@ export const signIn = (email, password) => {
           alert('Email or password is wrong');
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err.response.status == 401) {
+          alert('Email or password is wrong');
+        } else {
+          console.log(err);
+        }
+      });
   };
 };
 
