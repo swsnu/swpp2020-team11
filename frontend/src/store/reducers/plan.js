@@ -3,7 +3,7 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
   plan: null,
   reservation: null,
-  history: null,
+  history: [],
 };
 
 const reducer = (state = initialState, action) => {

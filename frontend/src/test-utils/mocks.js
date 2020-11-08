@@ -3,7 +3,19 @@ import { connectRouter } from 'connected-react-router';
 
 import { history, middlewares } from '../store/store';
 
-const getMockTodoReducer = jest.fn(
+export const stubInitialState = {
+  account: {
+    isLoggedIn: false,
+    user: null,
+  },
+  plan: {
+    plan: null,
+    reservation: null,
+    history: [],
+  },
+};
+
+const getMockAccountReducer = (initialState) => jest.fn(
   (initialState) => (state = initialState, action) => {
     switch (action.type) {
       default:
@@ -11,12 +23,25 @@ const getMockTodoReducer = jest.fn(
     }
     return state;
   },
-);
+)(initialState);
+
+const getMockPlanReducer = (initialState) => jest.fn(
+  (initialState) => (state = initialState, action) => {
+    switch (action.type) {
+      default:
+        break;
+    }
+    return state;
+  },
+)(initialState);
+
 
 export const getMockStore = (initialState) => {
-  const mockTodoReducer = getMockTodoReducer(initialState);
+  const mockAccountReducer = getMockAccountReducer(initialState.account);
+  const mockPlanReducer = getMockPlanReducer(initialState.plan);
   const rootReducer = combineReducers({
-    td: mockTodoReducer,
+    account: mockAccountReducer,
+    plan: mockPlanReducer,
     router: connectRouter(history),
   });
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
