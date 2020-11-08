@@ -25,9 +25,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
-    "jest": "yarn test --coverage --watchAll=false",
     "lint": "./node_modules/.bin/eslint src/",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
