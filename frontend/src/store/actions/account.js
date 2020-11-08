@@ -9,10 +9,9 @@ export const signIn = (email, password) => {
       password: password,
     })
       .then((res) => {
-        const user = res.data;
-        if (true) {
-          dispatch(signIn_(user));
-          dispatch(push('/articles'));
+        if (res.status === 201) {
+          dispatch({ type: actionTypes.SignIn, value: res.data });
+          dispatch(push('/'));
         } else {
           alert('Email or password is wrong');
         }
@@ -22,13 +21,12 @@ export const signIn = (email, password) => {
 };
 
 
-export const signOut = (user) => {
+export const signOut = () => {
   return (dispatch) => {
-    user.logged_in = false;
-    return axios.put('/api/user/' + user.id, user)
+    return axios.get('/api/user/logout')
       .then((res) => {
-        dispatch(push('/login'));
         dispatch({ type: actionTypes.SignOut });
+        dispatch(push('/'));
       })
       .catch((err) => console.log(err));
   };

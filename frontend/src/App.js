@@ -1,30 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { ConnectedRouter } from 'connected-react-router';
 import { Route, Switch } from 'react-router-dom';
+import Main from './containers/MainPage';
+import Header from './containers/Header';
 import './App.css';
 
-/**
- * Render a <App /> component
- * @component
- * @param {object} props
- * @param {history} props.history
- * @return {object}
- */
 function App(props) {
   return (
-    <ConnectedRouter history={props.history}>
-      <div className="App">
+    <ConnectedRouter history={ props.history }>
+      <div className='App'>
+        <Header/>
         <Switch>
-          <Route path='/' exact render={() => <div>asapgo</div>}/>
+          <Route path='/' exact component={ Main }/>
         </Switch>
       </div>
     </ConnectedRouter>
   );
 }
-
-App.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default App;
