@@ -6,7 +6,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, nickname, password, phone_number=None):
+    def create_user(self, email, nickname, password, phone_number=""):
         if not email:
             raise ValueError('must have user email')
         user = self.model(
@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             email=self.normalize_email(email),
             nickname=nickname,
-            phone_number=None,
+            phone_number='',
             password=password
         )
         user.is_admin = True
@@ -42,7 +42,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(
         max_length=20,
         null=False,
-        unique=True
     )
     phone_number = PhoneNumberField(blank=True)
     is_active = models.BooleanField(default=True)
@@ -50,8 +49,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    USERNAME_FIELD = 'nickname'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nickname']
 
     def as_dict(self):
         return {'id': self.id, 'email': self.email}

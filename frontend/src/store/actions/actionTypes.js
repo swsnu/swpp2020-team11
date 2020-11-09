@@ -5,3 +5,7 @@ export const MakePersonality = 'MakePersonality';
 export const GetPlan = 'GetPlan';
 export const GetReservation = 'GetReservation';
 export const GetHistory = 'GetHistory';
+export const GetReview = 'GetReview';
+export const CreateReview = 'CreateReview';
+export const ModifyReview = 'ModifyReview';
+export const GetReviewDetail = 'GetReviewDetail';

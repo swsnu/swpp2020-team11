@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from account.models import User
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Plan(models.Model):
   user = models.ForeignKey(
@@ -11,12 +12,11 @@ class Plan(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   started_at = models.DateTimeField(null=True)
   ended_at = models.DateTimeField(null=True)
-  feedback = models.TextField() #temporary
+  feedback = models.FloatField(null=True) #temporary
 
 class Features(models.Model):
   feature_name = models.CharField(max_length=32)
   status = models.IntegerField()
-  
 
 class Place(models.Model):
   latitude = models.FloatField()
@@ -24,11 +24,36 @@ class Place(models.Model):
   type = models.CharField(max_length=64)
   features = models.ManyToManyField(
     Features,
-    related_name = 'place_feature'
+    related_name = 'place_feature',
+    blank=True
   ) #temporary
+  name = models.CharField(max_length=64, null = True)
   # image_urls = models.FilePathField(default='img.jpg')
   status = models.IntegerField() #temporary
   avg_score = models.FloatField()
+
+class Review(models.Model):
+  user = models.ForeignKey(
+    User,
+    on_delete = models.CASCADE,
+    related_name = 'review_user'
+  )
+  place = models.ForeignKey(
+    Place,
+    on_delete = models.CASCADE,
+    related_name = 'review_place'
+  )
+  plan = models.ForeignKey(
+    Plan,
+    on_delete = models.CASCADE,
+    related_name = 'review_plan',
+    null=True
+  )
+  score = models.FloatField()
+  content = models.TextField()
+
+  def asdict(self):
+    return {'id':self.id, 'plan':self.plan_id, 'place':self.place_id, 'score':self.score, 'content':self.content}
 
 class PlaceReservation(models.Model):
   place = models.ForeignKey(
@@ -45,7 +70,7 @@ class PlaceReservation(models.Model):
 class Taxi(models.Model):
   company = models.CharField(max_length=32)
   car_number = models.CharField(max_length=15)
-  phone_number = models.CharField(max_length=15)
+  phone_number = PhoneNumberField()
 
 class TransportationReservation(models.Model):
   taxi = models.ForeignKey(
@@ -67,9 +92,11 @@ class HalfDayOff(models.Model):
     related_name = 'halfdayoff_trans',
     null = True
   ) #temporary
-  activity = models.ManyToManyField(
+  activity = models.ForeignKey(
     PlaceReservation,
-    related_name = 'halfdayoff_activity'
+    on_delete = models.SET_NULL,
+    related_name = 'halfdayoff_activity',
+    null = True
   )
   dinner = models.ForeignKey(
     PlaceReservation,
@@ -77,9 +104,11 @@ class HalfDayOff(models.Model):
     related_name = 'halfdayoff_dinner',
     null = True
   )
-  scenary = models.ManyToManyField(
+  scenary = models.ForeignKey(
     PlaceReservation,
-    related_name = 'halfdayoff_scenary'
+    on_delete = models.SET_NULL,
+    related_name = 'halfdayoff_scenary',
+    null = True
   )
 
 class HashTag(models.Model):
