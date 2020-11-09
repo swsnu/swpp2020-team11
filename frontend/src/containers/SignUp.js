@@ -5,7 +5,13 @@ import * as actionCreators from '../store/actions/index';
 import { Form, Input, Tooltip, Checkbox, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
+import PersonalityCheckPopup from '../components/PersonalityCheckPopup';
+
 class Main extends Component {
+  state = {
+    popupVisible: false,
+  };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -32,17 +38,25 @@ class Main extends Component {
 
     const onFinish = (values) => {
       this.props.onSignUp(values.email, values.nickname,
-        values.password, values.phoneNumber);
+        values.password, values.phoneNumber)
+        .then(() => {
+          this.props.signUpSuccess ? popupControl() : null;
+        });
+    };
+
+    const popupControl = () => {
+      this.setState({ popupVisible: !this.state.popupVisible });
     };
 
     return (
       <div className="MainPage">
         <h1>SignUp</h1>
         <div className="SignUp">
+          {this.props.signUpSuccess ? <PersonalityCheckPopup /> : null}
           <Form
             {...formItemLayout}
             name="register"
-            classname="register-form"
+            className="register-form"
             onFinish={onFinish}
             scrollToFirstError
           >
@@ -141,6 +155,7 @@ class Main extends Component {
                 I have read the <a href="">agreement</a>
               </Checkbox>
             </Form.Item>
+
             <Form.Item {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit">
                 Register
@@ -153,6 +168,12 @@ class Main extends Component {
   };
 }
 
+const mapStateToProps = (state) => {
+  return {
+    signUpSuccess: state.account.signUpSuccess,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     onSignUp: (email, nickname, password, phoneNumber) =>
@@ -160,4 +181,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(withRouter(Main));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Main));
