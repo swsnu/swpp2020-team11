@@ -1,0 +1,24 @@
+.main-page {
+  margin-top: 120px;
+}
+
+.big-text {
+  margin-top: 50px;
+  margin-bottom: 0px;
+  font-weight: 500;
+  font-size: 25px;
+  display: block;
+}
+
+.middle-text {
+  margin-top: 0;
+  margin-bottom: 0px;
+  font-weight: 400;
+  font-size: 18px;
+  display: block;
+}
+
+.input-prefix {
+  font-weight: 600;
+  font-size: 18px;
+}
