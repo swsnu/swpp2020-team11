@@ -13,6 +13,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SignOut:
       return { ...state, isLoggedIn: false, user: null };
 
+    case actionTypes.SignUp:
+      return { ...state, isLoggedIn: true, user: action.value };
+
     default:
       break;
   }

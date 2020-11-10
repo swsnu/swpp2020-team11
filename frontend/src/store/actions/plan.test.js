@@ -111,6 +111,30 @@ describe('ActionCreators', () => {
       done();
     });
   });
+  it(`'makeReservation' should log if response is not valid`, (done) => {
+    const spyAxios = jest.spyOn(axios, 'post')
+      .mockImplementation((url) => {
+        return new Promise((resolve, reject) => {
+          const result = {
+            status: 400,
+          };
+          reject(result);
+        });
+      });
+
+    const spyLog = jest.spyOn(console, 'log')
+      .mockImplementation(() => {
+      });
+
+    store.dispatch(actionCreators.makeReservation()).then(() => {
+      const newState = store.getState();
+      expect(newState.plan.reservation).toBeNull();
+      expect(spyAxios).toHaveBeenCalledTimes(1);
+      expect(spyLog).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+
   it(`'getReservation' get reservation if response is valid`, (done) => {
     const spyAxios = jest.spyOn(axios, 'get')
       .mockImplementation((url) => {
@@ -123,6 +147,25 @@ describe('ActionCreators', () => {
         });
       });
     store.dispatch(actionCreators.getReservation()).then(() => {
+      const newState = store.getState();
+      expect(newState.plan.reservation).toBe(stubReservation);
+      expect(spyAxios).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+
+  it(`'makeReservation' get reservation if response is valid`, (done) => {
+    const spyAxios = jest.spyOn(axios, 'post')
+      .mockImplementation((url) => {
+        return new Promise((resolve, reject) => {
+          const result = {
+            status: 200,
+            data: stubReservation,
+          };
+          resolve(result);
+        });
+      });
+    store.dispatch(actionCreators.makeReservation()).then(() => {
       const newState = store.getState();
       expect(newState.plan.reservation).toBe(stubReservation);
       expect(spyAxios).toHaveBeenCalledTimes(1);

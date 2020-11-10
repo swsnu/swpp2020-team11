@@ -2,6 +2,9 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { Route, Switch } from 'react-router-dom';
 import Main from './containers/MainPage';
+import PlanPage from './containers/PlanPage';
+import SignIn from './containers/SignIn';
+// import SignUp from './containers/SignUp';
 import Header from './containers/Header';
 import History from './containers/History';
 import ReviewCreate from './components/review/ReviewCreate';
@@ -15,6 +18,10 @@ function App(props) {
         <Header/>
         <Switch>
           <Route path='/' exact component={ Main }/>
+          <Route path='/plan' exact component={ PlanPage }/>
+          <Route path='/sign_in/' exact component={ SignIn }/>
+          {/* <Route path='/sign_up/' exact component={ SignUp }/> */}
+          {/* <Route path='/plan/' exact render={() => <div>plan page</div>}/> */}
           <Route path='/plan/history' exact component={ History }/>
           <Route path='/review/:id/edit' exact component={ReviewEdit}/>
           <Route path='/review/:id/create' exact component={ ReviewCreate }/>
