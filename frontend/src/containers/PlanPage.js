@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { Button, Space, Image, Typography } from 'antd';
 import './PlanPage.css';
+
 const { Text } = Typography;
 
 class PlanPage extends Component {
@@ -13,7 +14,6 @@ class PlanPage extends Component {
   }
 
   render() {
-    console.log(this.props.plan);
     const images = this.props.plan.imageUrls.map((url, idx) => (
       <Image
         key={ 'place-image-' + idx.toString() }
@@ -24,7 +24,7 @@ class PlanPage extends Component {
       />),
     );
     const hashTags = this.props.plan.hashTags.map((tag, idx) => (
-      <><Text key={ 'hash-tag-' + idx.toString() }>{ '# ' + tag }</Text><br/></>),
+      <div key={ 'hash-tag-' + idx.toString() }><Text>{ '# ' + tag }</Text><br/></div>),
     );
 
     const information = <>
@@ -53,7 +53,13 @@ class PlanPage extends Component {
           </Text>
         </div>
 
-        <Button className="reservation-button" type="primary"> 예약하기 </Button>
+        <Button
+          className="reservation-button"
+          type="primary"
+          onClick={this.props.onReservation}
+        >
+          예약하기
+        </Button>
       </div>
     );
   };
@@ -61,14 +67,13 @@ class PlanPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.account.isLoggedIn,
     plan: state.plan.plan,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onGetPlan: (level, headCount) => dispatch(actionCreators.getPlan(level, headCount)),
+    onReservation: () => dispatch(actionCreators.makeReservation()),
   };
 };
 
