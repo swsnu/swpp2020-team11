@@ -1,6 +1,10 @@
 from django.urls import path
-from .views import plan
+from plan import views
 
 urlpatterns = [
-    path('', plan, name='plan'),
+    path('', views.plan, name='plan'),
+    path('token/', views.token, name='token'),
+    path('history/', views.history, name='history'),
+    path('review/<int:ids>/', views.review_detail, name='reviewDetail'),
+    path('review/', views.review, name='review')
 ]

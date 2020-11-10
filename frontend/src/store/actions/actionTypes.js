@@ -12,3 +12,6 @@ export const GetSuggestion = 'GetSuggestion';
 export const MakeSuggestion = 'MakeSuggestion';
 export const GetSuggestionById = 'GetSuggestionById';
 export const ChangeSuggestion = 'ChangeSuggestion';
+export const CreateReview = 'CreateReview';
+export const ModifyReview = 'ModifyReview';
+export const GetReviewDetail = 'GetReviewDetail';
