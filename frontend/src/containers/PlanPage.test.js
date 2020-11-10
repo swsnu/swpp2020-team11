@@ -4,12 +4,12 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import PlanPage from './PlanPage';
 import { history } from '../store/store';
-import { getMockStore, stubInitialState, stubPlan, stubSinglePlan } from '../test-utils/mocks';
-import { Typography, InputNumber } from 'antd';
+import {
+  getMockStore, stubInitialState,
+  stubPlan, stubSinglePlan,
+} from '../test-utils/mocks';
 import { Route, Switch } from 'react-router-dom';
 import * as actionCreators from '../store/actions/plan';
-
-const { Text } = Typography;
 
 function mockMainPage(initialState) {
   const mockStore = getMockStore(initialState);
