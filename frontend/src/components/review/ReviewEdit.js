@@ -58,17 +58,17 @@ class ReviewEdit extends React.Component {
     this.props.history.push('/plan/history');
   }
   render() {
-    // if (!this.props.isLoggedIn) {
-    //   this.props.history.push('/sign_in');
-    // }
-    if (this.props.reviewDetail.length != 0) {
+    if (!this.props.isLoggedIn) {
+      this.props.history.push('/sign_in');
+    }
+    const review = this.props.reviewDetail.filter((review)=>
+      review.id==this.props.match.params.id)[0];
+    if (review) {
       const { Step } = Steps;
       const { TextArea } = Input;
       const score = this.state.score;
       const comment = this.state.comment;
       const validModify = (comment=='');
-      const review = this.props.reviewDetail.filter((review)=>
-        review.id==this.props.match.params.id)[0];
       return (
         <div className='reviewEdit'>
           <Steps current={this.state.current}
