@@ -7,4 +7,5 @@ export {
   getHistory,
   getPlan,
   getReservation,
+  makeReservation,
 } from './plan';

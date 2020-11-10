@@ -37,3 +37,14 @@ export const getPlan = (level, headCount) => {
       .catch((err) => console.log(err));
   };
 };
+
+export const makeReservation = () => {
+  return (dispatch) => {
+    return axios.post(`/api/plan/reservation/`)
+      .then((res) => {
+        dispatch({ type: actionTypes.GetReservation, value: res.data });
+        dispatch(push('/plan/reservation'));
+      })
+      .catch((err) => console.log(err));
+  };
+};
