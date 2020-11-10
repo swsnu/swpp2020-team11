@@ -23,7 +23,7 @@ export const signIn = (email, password) => {
 
 export const signOut = () => {
   return (dispatch) => {
-    return axios.get('/api/user/logout')
+    return axios.get('/api/user/logout/')
       .then((res) => {
         dispatch({ type: actionTypes.SignOut });
         dispatch(push('/'));
