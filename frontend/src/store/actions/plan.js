@@ -4,10 +4,20 @@ import { push } from 'connected-react-router';
 
 export const getHistory = () => {
   return (dispatch) => {
-    return axios.get('/api/plan/')
+    return axios.get('/api/plan/history')
       .then((res) => {
-        dispatch({ type: actionTypes.GetHistory, value: res.data });
-        dispatch(push('/plan/history/'));
+        dispatch({ type: actionTypes.GetHistory, value: res.data.history });
+        return res.data.history;
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
+export const getReview = () => {
+  return (dispatch) => {
+    return axios.get('/api/plan/review')
+      .then((res) => {
+        dispatch({ type: actionTypes.GetReview, value: res.data.review });
       })
       .catch((err) => console.log(err));
   };
@@ -48,3 +58,38 @@ export const makeReservation = () => {
       .catch((err) => console.log(err));
   };
 };
+
+export const createReview = (review) => {
+  return (dispatch) => {
+    return axios.post('/api/plan/review/', review)
+      .then((res) => {
+        dispatch({ type: actionTypes.CreateReview, value: res.data.review });
+        dispatch(push('/plan/history'));
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
+export const getReviewDetail = (id) => {
+  return (dispatch) => {
+    return axios.get('/api/plan/review/' + id)
+      .then((res) => {
+        console.log(res.data);
+        dispatch({ type: actionTypes.GetReviewDetail, value: res.data.reviewDetail });
+        return res.data.reviewDetail;
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
+export const modifyReview = (review) => {
+  return (dispatch) => {
+    return axios.put('/api/plan/review/' + review.id + '/', review)
+      .then((res) => {
+        dispatch({ type: actionTypes.ModifyReview, value: res.data });
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
+

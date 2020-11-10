@@ -1,6 +1,7 @@
 export {
   signIn,
   signOut,
+  signUp,
 } from './account';
 
 export {
@@ -8,4 +9,8 @@ export {
   getPlan,
   getReservation,
   makeReservation,
+  getReview,
+  createReview,
+  getReviewDetail,
+  modifyReview,
 } from './plan';
