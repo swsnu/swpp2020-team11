@@ -12,12 +12,12 @@ const stubLogin1 = { isLoggedIn: false };
 const stubLogin2 = { isLoggedIn: true };
 const reviewDetail = [
   { 'id': 1, 'plan': 1, 'place': 1, 'score': 4,
-    'content': 'temp', 'url': '../../assets/img/porto1.png'},
+    'content': 'temp', 'url': '../../assets/img/porto1.png' },
   { 'id': 2, 'plan': 1, 'place': 2, 'score': 3,
-    'content': 'temp2', 'url': '../../assets/img/porto1.png'},
+    'content': 'temp2', 'url': '../../assets/img/porto1.png' },
   { 'id': 3, 'plan': 1, 'place': 3, 'score': 2,
-    'content': 'temp3', 'url': '../../assets/img/porto1.png'}
-]
+    'content': 'temp3', 'url': '../../assets/img/porto1.png' },
+];
 const initialStateWithoutLogin = {
   account: stubLogin1,
   plan: {
@@ -104,7 +104,6 @@ describe('<ReviewCreate/>', () => {
     wrapper4.simulate('click');
     expect(spyModifyReview).toHaveBeenCalledTimes(1);
     expect(reviewEditInstance.state.save).toBe(true);
-    
     wrapper.simulate('click');
     expect(spyHistoryPush).toHaveBeenCalledTimes(1);
   });
