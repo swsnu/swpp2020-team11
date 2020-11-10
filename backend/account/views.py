@@ -1,4 +1,5 @@
 import json
+<<<<<<< HEAD
 import random
 import string
 
@@ -7,12 +8,20 @@ from django.contrib import auth
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist
+=======
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+from django.contrib import auth
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
+from django.db import IntegrityError
+>>>>>>> 20d9aff5c806de45837012560d54c470ef42127e
 
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
 from .models import User
-
 
 
 @ensure_csrf_cookie

@@ -1,37 +1,35 @@
 matrix:
   include:
   - language: node_js
-    node_js: '12'
+    node_js: 12
+    python: 3.8
+    dist: bionic
     cache:
     - yarn: true
-    before_install:
-    - cd frontend
-    after_success:
-    - COVERALLS_REPO_TOKEN=$REPO_TOKEN yarn run coveralls
-    install:
-    - yarn install
-    script:
-    - "./node_modules/.bin/eslint src/"
-    - yarn test --coverage --watchAll=false
-
-  - language: python
-    python: 3.8.5
+    - pip: true
     addons:
       sonarcloud:
         organization: "swsnu"
         token:
           secure: "ugPwzpK12QwBAGjJPCCWf5kdCA0TghJKAS1itL6+oA/siujCWKIvGyoweLx1KrijH9KkuS8SfBpibCk76QouT14CGy50WHkaV0tQzgFgTK4HXBS+cQHcSfWV4lZRcdYHLiy65NFcM0HLQEyPJZjKjjCdBqh6K2MNW/7MoE4OyZRLMvL+Vc0sgna8ixlv3de0xQ3nPUlrNTtCQz36VRPvf5PjjSjbGCKHGnIpXqRj+BBHoCTn7pZVXaGG9PkmLhAw6T842mrXDM1ylj2Q52dz2Fxi0hgLxEFGh4Bw/a/cY2TBmhaoiLyaGizRReBi1ZhFroVVCpm3rWQxZR5bisBl3CQoEqpGpfyM8h+Ygck0EFuKEMMSKR5psGeN9/xfzE7iCun949B4G3nIqhpYPylcb3cgNFYObThf5y0psxvmFhISorGIxxvDG1urqPCUeTueu8U/DbCyB9c8hV/WibJaMeyiOXBm+xNBeRGNyLvouEM//DbofIYiyruLPHmIp/9Gpdkad+zS05+wu3pLGOQBIEo6VQu7XyZFLcN2gtNjGDKsahLc+b5gZ0hfyhtVULYi9pm/r2/qPBhZ09lmDJ9/2lLU3M4Yx6PZI/nXVwcA5OG5iElDcjCXFcp3uV/Mk0AavDjghiZDkuY/p9rg2Vl3ns+H6hpUrQbdiwmEcfB36pU="
-    cache:
-    - pip: true
-    before_install:
-    - cd backend
-    after_success:
-    - cd backend && coveralls
-#    - coveralls --merge=frontend/coverage/coverage-final.json
     install:
+    - cd frontend
+    - yarn install
+    - cd ../backend
+    - source ~/virtualenv/python3.8/bin/activate
     - pip install -r requirements.txt
+    - gem install coveralls-lcov
     script:
-    - pylint **/*.py --exit-zero --load-plugins pylint_django
-    - coverage run --source='.' manage.py test
-    - coverage xml
-    - cd .. && sonar-scanner
+      - cd ../frontend
+      - "./node_modules/.bin/eslint src/"
+      - yarn test
+      - coveralls-lcov -v -n coverage/lcov.info > coverage/coverage.json
+      - cd ../backend
+      - pylint **/*.py --exit-zero --load-plugins pylint_django
+      - coverage run --source='.' manage.py test
+      - coverage xml
+      - cd ..
+      - sonar-scanner
+    after_success:
+    - cd backend
+    - coveralls --merge=../frontend/coverage/coverage.json

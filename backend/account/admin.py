@@ -1,7 +1,17 @@
 from django.contrib import admin
+from . import models
 
-from .models import User
 
+@admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
-  list_display = ('email', 'nickname', 'password', 'phone_number')
-admin.site.register(User, UserAdmin)
+
+    list_display = (
+        'nickname',
+        'email',
+        'date_joined',
+    )
+
+    list_display_links = (
+        'nickname',
+        'email',
+    )
