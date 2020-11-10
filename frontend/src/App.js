@@ -15,8 +15,6 @@ function App(props) {
         <Header/>
         <Switch>
           <Route path='/' exact component={ Main }/>
-          <Route path='/sign_in/' exact render={() => <div>signin page</div>}/>
-          <Route path='/plan/' exact render={() => <div>plan page</div>}/>
           <Route path='/plan/history' exact component={ History }/>
           <Route path='/review/:id/edit' exact component={ReviewEdit}/>
           <Route path='/review/:id/create' exact component={ ReviewCreate }/>

@@ -7,6 +7,6 @@ def login_required(func):
         request = args[0]
         if request.user.is_authenticated:
             return func(*args, **kwargs)
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        return HttpResponse(status=HttpStatusCode.UnAuthorized)
 
     return wrapper
