@@ -1,9 +1,9 @@
 matrix:
   include:
   - language: node_js
-    dist: bionic
     node_js: 12
     python: 3.8
+    dist: bionic
     cache:
     - yarn: true
     - pip: true
