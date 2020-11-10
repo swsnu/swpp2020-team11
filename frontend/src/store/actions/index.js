@@ -8,6 +8,7 @@ export {
   getHistory,
   getPlan,
   getReservation,
+  makeReservation,
   getReview,
   createReview,
   getReviewDetail,

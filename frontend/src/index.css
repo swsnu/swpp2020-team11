@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Zapfino';
+  src: local('Zapfino', url(./assets/font/LinotypeZapfino-One.ttf) format('truetype'))
+}
