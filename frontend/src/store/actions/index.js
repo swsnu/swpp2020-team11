@@ -7,4 +7,8 @@ export {
   getHistory,
   getPlan,
   getReservation,
+  getReview,
+  createReview,
+  getReviewDetail,
+  modifyReview,
 } from './plan';

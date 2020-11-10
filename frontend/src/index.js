@@ -8,7 +8,6 @@ import store, { history } from './store/store';
 import axios from 'axios';
 import 'antd/dist/antd.css';
 
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
