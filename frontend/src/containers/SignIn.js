@@ -87,7 +87,7 @@ class SignIn extends Component {
         </div>
       </div>
     );
-  };
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
