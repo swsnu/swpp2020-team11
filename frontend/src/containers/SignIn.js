@@ -35,7 +35,7 @@ class SignIn extends Component {
           >
             <Form.Item
               name="email"
-              rules={[{ required: true, message: 'Please input your Email!' }]}
+              rules={[{ required: true, message: 'Please input Email!' }]}
             >
               <Input
                 className="email-input"
@@ -50,7 +50,7 @@ class SignIn extends Component {
 
             <Form.Item
               name="password"
-              rules={[{ required: true, message: 'Please input your Password!' }]}
+              rules={[{ required: true, message: 'Please input Password!' }]}
             >
               <Input
                 className="password-input"
