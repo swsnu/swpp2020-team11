@@ -7,6 +7,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import { history } from '../store/store';
 import { getMockStore, stubInitialState } from '../test-utils/mocks';
 import { Route, Switch } from 'react-router-dom';
+import * as actionCreators from '../store/actions/account';
 
 function mockSignIn(initialState) {
   const mockStore = getMockStore(initialState);
@@ -14,7 +15,7 @@ function mockSignIn(initialState) {
     <Provider store={ mockStore }>
       <ConnectedRouter history={ history }>
         <Switch>
-          <Route path='/sign_in/' exact component={ SignIn }/>
+          <Route path='/' exact component={ SignIn }/>
         </Switch>
       </ConnectedRouter>
     </Provider>
@@ -23,6 +24,22 @@ function mockSignIn(initialState) {
 
 describe('<SignIn />', () => {
   let signIn;
+
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: (query) => jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }))(query),
+    });
+  });
 
   beforeEach(() => {
     signIn = mockSignIn;
@@ -37,9 +54,25 @@ describe('<SignIn />', () => {
     expect(component.find('.SignIn').length).toBe(1);
     expect(component.find('.Login').length).toBe(1);
     expect(component.find(Form).length).toBe(1);
-    expect(component.find(Form.Item).length).toBe(4);
+    expect(component.find(Form.Item).length).toBe(5);
     expect(component.find(Input).length).toBe(2);
     expect(component.find(Button).length).toBe(1);
     expect(component.find(Checkbox).length).toBe(1);
+  });
+
+  it('should call signIn if user clicks button.', () => {
+    const component = mount(signIn(stubInitialState));
+    const inputEmail = component.find('#normal_login_email').at(0);
+    inputEmail.simulate('change', { target: { value: 'dummy@dummy.dummy' } });
+    const inputPassword = component.find('#normal_login_password').at(0);
+    inputPassword.simulate('change', { target: { value: 'dummy' } });
+    component.update();
+    const button = component.find('.login-form-button').at(0);
+    const spySignIn = jest.spyOn(actionCreators, 'signIn')
+      .mockImplementation(() => {
+        return (dispatch) => {};
+      });
+    button.simulate('click');
+    expect(spySignIn).toHaveBeenCalled();
   });
 });

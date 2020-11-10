@@ -42,7 +42,7 @@ def sign_out(request):
 def sign_up(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
-            return JsonResponse(request.user.as_dict(), status=HttpStatusCode.OK)
+            return JsonResponse(request.user.as_dict(), status=HttpStatusCode.Created)
         return HttpResponse(status=HttpStatusCode.UnAuthorized)
 
     req_data = json.loads(request.body.decode())
