@@ -151,7 +151,11 @@ class SignUp extends Component {
               {...tailFormItemLayout}
             >
               <Checkbox>
-                I have read the <a href="">agreement</a>
+                I have read the agreement
+                <Button className="agreement button"
+                  onClick={() => this.props.history.push('/')}>
+                  Click to read
+                </Button>
               </Checkbox>
             </Form.Item>
 

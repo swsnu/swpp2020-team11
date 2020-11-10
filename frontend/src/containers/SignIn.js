@@ -6,9 +6,22 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 class SignIn extends Component {
+  state = {
+    email: '',
+    password: '',
+  };
+
   render() {
-    const onClickLogin = (values) => {
-      this.props.onSignIn(values.email, values.password);
+    const onClickLogin = () => {
+      this.props.onSignIn(this.state.email, this.state.password);
+    };
+
+    const handleEmail = (event) => {
+      this.setState({ email: event.target.value });
+    };
+
+    const handlePassword = (event) => {
+      this.setState({ password: event.target.value });
     };
 
     return (
@@ -19,17 +32,19 @@ class SignIn extends Component {
             name="normal_login"
             className="login-form"
             initialValues={{ remember: true }}
-            onFinish={onClickLogin}
           >
             <Form.Item
               name="email"
               rules={[{ required: true, message: 'Please input your Email!' }]}
             >
               <Input
+                className="email-input"
                 prefix={
                   <UserOutlined className="site-form-item-icon" />
                 }
                 placeholder="Email"
+                value={this.state.email}
+                onChange={handleEmail}
               />
             </Form.Item>
 
@@ -38,9 +53,12 @@ class SignIn extends Component {
               rules={[{ required: true, message: 'Please input your Password!' }]}
             >
               <Input
+                className="password-input"
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
                 placeholder="Password"
+                value={this.state.password}
+                onChange={handlePassword}
               />
             </Form.Item>
 
@@ -49,16 +67,21 @@ class SignIn extends Component {
                 <Checkbox>Remember me</Checkbox>
               </Form.Item>
 
-              <a className="login-form-forgot" href="">
+              <Button className="login-form-forgot"
+                onClick={() => this.props.history.push('/')}>
                 Forgot password
-              </a>
+              </Button>
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button">
+              <Button type="primary" htmlType="submit"
+                className="login-form-button" onClick={onClickLogin}>
                 Log in
               </Button>
-              Or <a href="/sign_up/">register now!</a>
+              <Button className="signup-button"
+                onClick={() => this.props.history.push('/sign_up/')}>
+                Sign Up
+              </Button>
             </Form.Item>
           </Form>
         </div>
