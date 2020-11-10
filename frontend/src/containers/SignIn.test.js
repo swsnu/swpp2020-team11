@@ -9,13 +9,15 @@ import { getMockStore, stubInitialState } from '../test-utils/mocks';
 import { Route, Switch } from 'react-router-dom';
 import * as actionCreators from '../store/actions/account';
 
+history.location.pathname = '/sign_in';
+
 function mockSignIn(initialState) {
   const mockStore = getMockStore(initialState);
   return (
     <Provider store={ mockStore }>
       <ConnectedRouter history={ history }>
         <Switch>
-          <Route path='/' exact component={ SignIn }/>
+          <Route path='/sign_in' exact component={ SignIn }/>
         </Switch>
       </ConnectedRouter>
     </Provider>
@@ -53,11 +55,9 @@ describe('<SignIn />', () => {
     const component = mount(signIn(stubInitialState));
     expect(component.find('.SignIn').length).toBe(1);
     expect(component.find('.Login').length).toBe(1);
-    expect(component.find(Form).length).toBe(1);
-    expect(component.find(Form.Item).length).toBe(5);
-    expect(component.find(Input).length).toBe(2);
-    expect(component.find(Button).length).toBe(1);
-    expect(component.find(Checkbox).length).toBe(1);
+    expect(component.find('form').length).toBe(1);
+    expect(component.find('input').length).toBe(3);
+    expect(component.find('button').length).toBe(1);
   });
 
   it('should call signIn if user clicks button.', () => {
