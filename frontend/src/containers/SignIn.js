@@ -5,14 +5,14 @@ import * as actionCreators from '../store/actions/index';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-class Main extends Component {
+class SignIn extends Component {
   render() {
     const onClickLogin = (values) => {
       this.props.onSignIn(values.email, values.password);
     };
 
     return (
-      <div className="MainPage">
+      <div className="SignIn">
         <h1>SignIn</h1>
         <div className="Login">
           <Form
@@ -73,4 +73,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(withRouter(Main));
+export default connect(null, mapDispatchToProps)(withRouter(SignIn));

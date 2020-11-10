@@ -3,7 +3,6 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
   isLoggedIn: false,
   user: null,
-  signUpSuccess: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -15,7 +14,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, isLoggedIn: false, user: null };
 
     case actionTypes.SignUp:
-      return { ...state, signUpSuccess: true };
+      return { ...state, isLoggedIn: true, user: action.value };
 
     default:
       break;

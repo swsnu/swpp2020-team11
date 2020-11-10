@@ -1,42 +1,28 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { Popconfirm, Button } from 'antd';
 
-const App = () => {
-  const [visible, setVisible] = React.useState(false);
-  const [confirmLoading, setConfirmLoading] = React.useState(false);
-
-  const showPopconfirm = () => {
-    setVisible(true);
+class PersonalityCheckPopup extends Component {
+  state = {
+    visible: false,
   };
 
-  const handleOk = () => {
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setVisible(false);
-      setConfirmLoading(false);
-    }, 2000);
+  render() {
+    return (
+      <div className="PersonalityCheckPopup">
+        <Popconfirm
+          title="Personality check for better recommendation."
+          visible={this.state.visible}
+          onConfirm={() => this.props.history.push('/')}
+          onCancel={() => this.props.history.push('/')}
+        >
+          <Button type="primary" onClick={() => this.setState({ visible: true })}>
+            Next Step!
+          </Button>
+        </Popconfirm>
+      </div>
+    );
   };
-
-  const handleCancel = () => {
-    console.log('Clicked cancel button');
-    setVisible(false);
-  };
-
-  return (
-    <>
-      <Popconfirm
-        title="Title"
-        visible={visible}
-        onConfirm={handleOk}
-        okButtonProps={{ loading: confirmLoading }}
-        onCancel={handleCancel}
-      >
-        <Button type="primary" onClick={showPopconfirm}>
-          Have a personality check for better recommendation.
-        </Button>
-      </Popconfirm>
-    </>
-  );
 };
 
-export default App;
+export default withRouter(PersonalityCheckPopup);

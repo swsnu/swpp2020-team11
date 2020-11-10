@@ -7,7 +7,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import PersonalityCheckPopup from '../components/PersonalityCheckPopup';
 
-class Main extends Component {
+class SignUp extends Component {
   state = {
     popupVisible: false,
   };
@@ -40,7 +40,7 @@ class Main extends Component {
       this.props.onSignUp(values.email, values.nickname,
         values.password, values.phoneNumber)
         .then(() => {
-          this.props.signUpSuccess ? popupControl() : null;
+          this.props.isLoggedIn ? popupControl() : null;
         });
     };
 
@@ -52,7 +52,6 @@ class Main extends Component {
       <div className="MainPage">
         <h1>SignUp</h1>
         <div className="SignUp">
-          {this.props.signUpSuccess ? <PersonalityCheckPopup /> : null}
           <Form
             {...formItemLayout}
             name="register"
@@ -162,6 +161,7 @@ class Main extends Component {
               </Button>
             </Form.Item>
           </Form>
+          {this.props.isLoggedIn ? <PersonalityCheckPopup /> : null}
         </div>
       </div>
     );
@@ -170,7 +170,7 @@ class Main extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    signUpSuccess: state.account.signUpSuccess,
+    isLoggedIn: state.account.isLoggedIn,
   };
 };
 
@@ -181,4 +181,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Main));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SignUp));

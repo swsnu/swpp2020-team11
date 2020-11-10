@@ -20,11 +20,7 @@ export const signIn = (email, password) => {
         }
       })
       .catch((err) => {
-        if (err.response.status == 401) {
-          alert('Email or password is wrong');
-        } else {
-          console.log(err);
-        }
+        console.log(err);
       });
   };
 };
@@ -53,14 +49,12 @@ export const signUp = (email, nickname, password, phoneNumber) => {
       .then((res) => {
         if (res.status === 201) {
           dispatch({ type: actionTypes.SignUp, value: res.data });
+        } else {
+          alert('This Email or nickname is already taken.');
         }
       })
       .catch((err) => {
-        if (err.response.status == 401) {
-          alert('This Email is already taken.');
-        } else {
-          console.log(err);
-        }
+        console.log(err);
       });
   };
 };

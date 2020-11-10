@@ -16,7 +16,7 @@ function App(props) {
           <Route path='/' exact component={ Main }/>
           <Route path='/sign_in/' exact component={ SignIn }/>
           <Route path='/sign_up/' exact component={ SignUp }/>
-          <Route path='/plan/' exact render={() => <div>plan page</div>}/>
+          {/* <Route path='/plan/' exact render={() => <div>plan page</div>}/> */}
         </Switch>
       </div>
     </ConnectedRouter>
