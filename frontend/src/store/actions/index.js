@@ -1,6 +1,7 @@
 export {
   signIn,
   signOut,
+  signUp,
 } from './account';
 
 export {

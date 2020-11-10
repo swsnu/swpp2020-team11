@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Plan, HalfDayOff, TransportationReservation, Taxi, PlaceReservation, Place, Review, Features
+
 # Register your models here.
 admin.site.register(Plan)
 admin.site.register(HalfDayOff)

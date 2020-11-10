@@ -56,14 +56,30 @@ class SignUpTest(APITestCase):
         response = self.client.post(self.url,
                                     json.dumps({'email': 'not_duplicated@email.com', 'password': 'valid password'}),
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(user_object_create_user.call_count, 0)
 
     def test_post_with_duplicated_email(self):
         response = self.client.post(self.url,
                                     json.dumps(stub_user),
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 204)
+
+    def test_get_without_authorization(self):
+        response = self.client.get(self.url, content_type='application/json',
+                                   HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_with_authorization(self):
+        self.client.post(self.url, json.dumps(
+            {'email': 'valid@email.com', 'nickname': 'nickname', 'password': 'valid password'}),
+                                    content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.client.post('/api/user/login/', {'email': 'valid@email.com', 'password': 'valid password'},
+                        content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
+        response = self.client.get(self.url, content_type='application/json',
+                                   HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 201)
+        self.assertIn('{"id": 2, "email": "valid@email.com"}', response.content.decode())
 
 
 class SignInTest(APITestCase):
@@ -79,21 +95,21 @@ class SignInTest(APITestCase):
     def test_post_with_valid_request(self, auth_login_function):
         response = self.client.post(self.url, {'email': 'valid@email.com', 'password': 'valid password'},
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(auth_login_function.call_count, 1)
 
     @patch('django.contrib.auth.login')
     def test_post_with_not_existing_email(self, auth_login_function):
         response = self.client.post(self.url, {'email': 'not_existing@email.com', 'password': 'valid password'},
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(auth_login_function.call_count, 0)
 
     @patch('django.contrib.auth.login')
     def test_post_with_invalid_password(self, auth_login_function):
         response = self.client.post(self.url, {'email': 'valid@email.com', 'password': 'wrong password'},
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(auth_login_function.call_count, 0)
 
 
