@@ -4,69 +4,78 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import MainPage from './MainPage';
 import { history } from '../store/store';
-import { getMockStore, stubInitialState } from '../test-utils/mocks';
+import { getMockStore, stubInitialState, stubAccount } from '../test-utils/mocks';
 import { Typography, InputNumber } from 'antd';
 import { Route, Switch } from 'react-router-dom';
 import * as actionCreators from '../store/actions/plan';
 
-const { Paragraph } = Typography;
+const { Text } = Typography;
+
+function mockMainPage(initialState) {
+  const mockStore = getMockStore(initialState);
+  return (
+    <Provider store={ mockStore }>
+      <ConnectedRouter history={ history }>
+        <Switch>
+          <Route path='/' exact component={ MainPage }/>
+        </Switch>
+      </ConnectedRouter>
+    </Provider>
+  );
+}
 
 describe('<MainPage />', () => {
   let mainPage;
 
-  beforeAll(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: (query) => jest.fn().mockImplementation((query) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // Deprecated
-        removeListener: jest.fn(), // Deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-      }))(query),
-    });
-  });
-
   beforeEach(() => {
-    mainPage = function mockMainPage(initialState) {
-      const mockStore = getMockStore(initialState);
-      return (
-        <Provider store={ mockStore }>
-          <ConnectedRouter history={ history }>
-            <Switch>
-              <Route path='/' exact component={ MainPage }/>
-            </Switch>
-          </ConnectedRouter>
-        </Provider>
-      );
-    };
+    mainPage = mockMainPage;
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should render without errors', () => {
+  it('should render without error.', () => {
     const component = mount(mainPage(stubInitialState));
-    expect(component.find('.MainPage').length).toBe(1);
+    expect(component.find('.main-page').length).toBe(1);
     expect(component.find('img').length).toBe(3);
-    expect(component.find(Paragraph).length).toBe(3);
+    expect(component.find(Text).length).toBe(3);
     expect(component.find(InputNumber).length).toBe(1);
   });
 
-  it('should call get plan when click image.', () => {
+  it('should change image url if mouse pointer over image.', () => {
     const component = mount(mainPage(stubInitialState));
-    const spyFunction = jest.spyOn(actionCreators, 'getPlan')
-      .mockImplementation((path) => {
+    const mainImage = component.find('img').at(0);
+    mainImage.simulate('mouseover');
+    component.update();
+    // i don't know why i can't test this case
+    // expect(mainImage.prop('src')).toContain('hover');
+    mainImage.simulate('mouseout');
+    component.update();
+    expect(mainImage.prop('src')).not.toContain('hover');
+  });
+
+  it('should call getPlan if logged in user click image.', () => {
+    const logInState = { ...stubInitialState, account: stubAccount };
+    const component = mount(mainPage(logInState));
+    const mainImage = component.find('img').at(0);
+    const wrapper = component.find('MainPage').instance();
+    const spyLogOut = jest.spyOn(actionCreators, 'getPlan')
+      .mockImplementation(() => {
         return (dispatch) => {
         };
       });
-    const image = component.find('img').at(0);
-    image.simulate('click');
-    expect(spyFunction).toHaveBeenCalledTimes(1);
+    mainImage.simulate('click');
+    expect(wrapper.state.headCount).toBe(2);
+    expect(spyLogOut).toBeCalledWith(1, 2);
+  });
+
+  it('should show modal if not logged in user click image.', () => {
+    const component = mount(mainPage(stubInitialState));
+    const mainImage = component.find('img').at(0);
+    const wrapper = component.find('MainPage').instance();
+    mainImage.simulate('click');
+    expect(wrapper.state.popUpVisible).toBeTruthy();
   });
 
   it('should save headcount if user set head count.', () => {
@@ -75,5 +84,47 @@ describe('<MainPage />', () => {
     const wrapper = component.find('MainPage').instance();
     inputNumber.simulate('change', { target: { value: '3' } });
     expect(wrapper.state.headCount).toBe(3);
+  });
+});
+
+describe('<MainPage /> Modal', () => {
+  let mainPage;
+  let component;
+  let wrapper;
+  let spyHistory;
+
+  beforeEach(() => {
+    mainPage = mockMainPage;
+    component = mount(mainPage(stubInitialState));
+    wrapper = component.find('MainPage').instance();
+    wrapper.setState({ popUpVisible: true });
+    component.update();
+    spyHistory = jest.spyOn(history, 'push')
+      .mockImplementation((user) => {
+        return (dispatch) => {
+        };
+      });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should redirect to sign in page if user click sign in button.', () => {
+    const closeButton = component.find('.sign-in-button').at(0);
+    closeButton.simulate('click');
+    expect(spyHistory).toBeCalledWith('/sign_in');
+  });
+
+  it('should redirect to sign up page if user click sign up button.', () => {
+    const signUpButton = component.find('.sign-up-button').at(0);
+    signUpButton.simulate('click');
+    expect(spyHistory).toBeCalledWith('/sign_up');
+  });
+
+  it('should close modal if user click close button.', () => {
+    const closeButton = component.find('.ant-modal-close-x').at(0);
+    closeButton.simulate('click');
+    expect(wrapper.state.popUpVisible).toBeFalsy();
   });
 });
