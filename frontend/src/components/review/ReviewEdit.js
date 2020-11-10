@@ -1,6 +1,6 @@
 import React from 'react';
 import { Steps, Rate, Input, Space, Button, Tag } from 'antd';
-import './ReviewCreate.css';
+import './ReviewEdit.css';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 import { withRouter } from 'react-router-dom';
@@ -26,7 +26,7 @@ class ReviewEdit extends React.Component {
           comment: res[i].content, current: i });
       });
   }
-  onChangeCurrent(current, review) {
+  onChangeCurrent(current) {
     if (!this.state.save) {
       const result = window.confirm('The change will be lost.');
       if (!result) {
@@ -58,9 +58,9 @@ class ReviewEdit extends React.Component {
     this.props.history.push('/plan/history');
   }
   render() {
-    if (!this.props.isLoggedIn) {
-      this.props.history.push('/sign_in');
-    }
+    // if (!this.props.isLoggedIn) {
+    //   this.props.history.push('/sign_in');
+    // }
     if (this.props.reviewDetail.length != 0) {
       const { Step } = Steps;
       const { TextArea } = Input;
@@ -72,7 +72,7 @@ class ReviewEdit extends React.Component {
       return (
         <div className='reviewEdit'>
           <Steps current={this.state.current}
-            onChange={(current) => this.onChangeCurrent(current, review)}>
+            onChange={(current) => this.onChangeCurrent(current)}>
             <Step title='Place 1'/>
             <Step title='Place 2'/>
             <Step title='Place 3'/>
