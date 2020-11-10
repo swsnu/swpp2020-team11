@@ -23,7 +23,11 @@ const reducer = (state = initialState, action) => {
       return { ...state, review: action.value };
 
     case actionTypes.CreateReview:
-      return { ...state, review: [...state.review, action.value] };
+      const newReview = [...state.review];
+      action.value.forEach((review) => {
+        newReview.push(review);
+      });
+      return { ...state, review: newReview };
 
     case actionTypes.ModifyReview:
       const modifyReview = state.reviewDetail.map((review) => {

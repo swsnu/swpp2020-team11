@@ -41,9 +41,9 @@ def sign_in(request):
     try:
         customer = User.objects.get(email=email)
     except ObjectDoesNotExist:
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        return HttpResponse(status=HttpStatusCode.UnAuthorized)
     if not customer.check_password(raw_password=password):
-        return HttpResponse(status=HttpStatusCode.UnAuthorzied)
+        return HttpResponse(status=HttpStatusCode.UnAuthorized)
     auth.login(request, customer)
     return HttpResponse(status=HttpStatusCode.NoContent)
 

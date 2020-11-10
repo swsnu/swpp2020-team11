@@ -2,6 +2,7 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { Route, Switch } from 'react-router-dom';
 import Main from './containers/MainPage';
+import SignIn from './containers/SignIn';
 import Header from './containers/Header';
 import History from './containers/History';
 import ReviewCreate from './components/review/ReviewCreate';

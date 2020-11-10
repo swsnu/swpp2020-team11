@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.test import TestCase, Client
 
 from common.util.test_utils import APITestCase, NotAllowedTestCase
-from .models import User
+from account.models import User
 
 stub_user = {
     'email': 'stub@email.com',

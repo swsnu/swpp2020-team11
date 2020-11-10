@@ -1,7 +1,6 @@
 import React from 'react';
-import { Steps, Rate, Input, Space, Button } from 'antd';
+import { Steps, Rate, Input, Space, Button, Tag } from 'antd';
 import './ReviewCreate.css';
-import tripImg from '../../assets/img/porto1.png';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 import { withRouter } from 'react-router-dom';
@@ -59,6 +58,9 @@ class ReviewEdit extends React.Component {
     this.props.history.push('/plan/history');
   }
   render() {
+    if (!this.props.isLoggedIn) {
+      this.props.history.push('/sign_in');
+    }
     if (this.props.reviewDetail.length != 0) {
       const { Step } = Steps;
       const { TextArea } = Input;
@@ -67,9 +69,8 @@ class ReviewEdit extends React.Component {
       const validModify = (comment=='');
       const review = this.props.reviewDetail.filter((review)=>
         review.id==this.props.match.params.id)[0];
-      // const place = plans[0].place[this.state.current].name;
       return (
-        <div className='step'>
+        <div className='reviewEdit'>
           <Steps current={this.state.current}
             onChange={(current) => this.onChangeCurrent(current, review)}>
             <Step title='Place 1'/>
@@ -78,8 +79,8 @@ class ReviewEdit extends React.Component {
           </Steps>
           <br/>
           <Space direction="vertical">
-            <img src={tripImg} height='400' width='400'></img>
-            {/* <h2>{place}</h2> */}
+            <img src={review.url} height='400' width='400'></img>
+            <h2>{review.name}<Tag color='pink'>#{review.tag}</Tag></h2>
             <Rate
               tooltips={desc}
               allowHalf
@@ -92,33 +93,31 @@ class ReviewEdit extends React.Component {
             </div>
             <TextArea style={{ width: 400 }} rows={4} placeholder="Simple Comment"
               value={comment} onChange={(event) => this.onChangeComment(event)}/>
-            <Button type="primary" disabled={validModify}
+            <Button id='saveButton' type='primary' disabled={validModify}
               onClick={() => this.onClickModify(review)}>
                 Save
             </Button>
-            <Button type="primary" onClick={() => this.onClickBack()}>
+            <Button id='backButton' type='primary' onClick={() => this.onClickBack()}>
                 Back
             </Button>
           </Space>
         </div>
       );
     } else {
-      return (<div></div>);
+      return (<div className='empty'></div>);
     }
   };
 }
 
 const mapStateToProps = (state) => {
   return {
-    histories: state.plan.history,
     reviewDetail: state.plan.reviewDetail,
+    isLoggedIn: state.account.isLoggedIn,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onGetHistory: () =>
-      dispatch(actionCreators.getHistory()),
     onGetReviewDetail: (id) =>
       dispatch(actionCreators.getReviewDetail(id)),
     onModifyReview: (review) =>

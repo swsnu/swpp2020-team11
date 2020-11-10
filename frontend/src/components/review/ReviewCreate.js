@@ -1,7 +1,6 @@
 import React from 'react';
-import { Steps, Rate, Input, Space, Button } from 'antd';
+import { Steps, Rate, Input, Space, Button, Tag } from 'antd';
 import './ReviewCreate.css';
-import tripImg from '../../assets/img/porto1.png';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 import { withRouter } from 'react-router-dom';
@@ -23,14 +22,7 @@ class ReviewCreate extends React.Component {
         return;
       }
     }
-    const stateScore = this.state.score;
-    const comment = this.state.comment;
-    if (this.state.score.length<current+1) {
-      stateScore[this.state.current+1] = -1;
-      comment[this.state.current+1] = '';
-    }
-    this.setState({ ...this.state, current: current,
-      score: stateScore, comment: comment });
+    this.setState({ ...this.state, current: current });
   }
   onChangeScore(value) {
     const stateScore = this.state.score;
@@ -42,9 +34,11 @@ class ReviewCreate extends React.Component {
     comment[this.state.current] = event.target.value;
     this.setState({ ...this.state, comment: comment });
   }
-  onClickCreate(places) {
+  onClickCreate(places, plan) {
     const place = places.map((place, index) => {
-      return { 'place': place.id,
+      return {
+        'plan': plan,
+        'place': place.id,
         'score': this.state.score[index],
         'content': this.state.comment[index] };
     });
@@ -54,21 +48,24 @@ class ReviewCreate extends React.Component {
     this.props.history.push('/plan/history');
   }
   render() {
+    if (!this.props.isLoggedIn) {
+      this.props.history.push('/sign_in');
+    }
     if (this.props.histories.length != 0) {
       const { Step } = Steps;
       const { TextArea } = Input;
       let score = this.state.score;
       let comment = this.state.comment;
-      const validCreate = score.includes(-1) || comment.includes('') || comment.length <3;
+      const validCreate = score.includes(-1) || comment.includes('');
       score = score[this.state.current];
       comment = comment[this.state.current];
       const plan = parseInt(this.props.match.params.id);
       const plans = this.props.histories.filter((history) => {
         return history.id==plan;
       });
-      const place = plans[0].place[this.state.current].name;
+      const place = plans[0].place[this.state.current];
       return (
-        <div className='step'>
+        <div className='reviewCreate'>
           <Steps current={this.state.current}
             onChange={(current) => this.onChangeCurrent(current)}>
             <Step title='Place 1'/>
@@ -77,8 +74,8 @@ class ReviewCreate extends React.Component {
           </Steps>
           <br/>
           <Space direction="vertical">
-            <img src={tripImg} height='400' width='400'></img>
-            <h2>{place}</h2>
+            <img src={place.img_urls} height='400' width='400'></img>
+            <h2>{place.name} <Tag color='pink'> #{place.tag} </Tag></h2>
             <Rate
               tooltips={desc}
               allowHalf
@@ -91,18 +88,18 @@ class ReviewCreate extends React.Component {
             </div>
             <TextArea style={{ width: 400 }} rows={4} placeholder="Simple Comment"
               value={comment} onChange={(event) => this.onChangeComment(event)}/>
-            <Button type="primary" disabled={validCreate}
-              onClick={() => this.onClickCreate(plans[0].place)}>
+            <Button id='createButton' type="primary" disabled={validCreate}
+              onClick={() => this.onClickCreate(plans[0].place, plan)}>
                 Create
             </Button>
-            <Button type="primary" onClick={() => this.onClickBack()}>
+            <Button id='backButton' type="primary" onClick={() => this.onClickBack()}>
                 Back
             </Button>
           </Space>
         </div>
       );
     } else {
-      return (<div></div>);
+      return (<div className='empty'></div>);
     }
   };
 }
@@ -110,6 +107,7 @@ class ReviewCreate extends React.Component {
 const mapStateToProps = (state) => {
   return {
     histories: state.plan.history,
+    isLoggedIn: state.account.isLoggedIn,
   };
 };
 

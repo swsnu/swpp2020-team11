@@ -7,10 +7,6 @@ import { withRouter } from 'react-router-dom';
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 const { Text } = Typography;
 class HistoryItem extends React.Component {
-  state = {
-    tags: ['#전통', '#차분한'],
-  }
-
   onClickModifyHandler(reviewId) {
     this.props.history.push('/review/'+reviewId+'/edit');
   }
@@ -37,11 +33,10 @@ class HistoryItem extends React.Component {
             tooltips={desc}
             allowHalf
             value={score}
-            // onChange={(value) => this.handleChange(value)}
           >
           </Rate>
           <br/>
-          <div className="ant-rate-text">
+          <div className='ant-rate-text'>
             {score ? desc[parseInt(score-0.5)] : desc[0]}
           </div>
           <br/>
@@ -51,7 +46,7 @@ class HistoryItem extends React.Component {
         </div>
       );
     } else {
-      historyReview = <Button type='primary'
+      historyReview = <Button className='reviewButton' type='primary'
         onClick={() => this.onClickCreateHandler(this.props.plan)}>review</Button>;
     }
 
@@ -67,7 +62,11 @@ class HistoryItem extends React.Component {
           </StaticGoogleMap>
           <Space direction="vertical">
             <Text>{date[0]+'년 '+date[1]+'월 '+date[2]+'일'}</Text>
-            <Tag color='pink'>{this.state.tags}</Tag>
+            <Space direction="horizontal">
+              <Tag color='pink'>#{place.tag}</Tag>
+              <Tag color='pink'>#{place2.tag}</Tag>
+              <Tag color='pink'>#{place3.tag}</Tag>
+            </Space>
             {historyReview}
           </Space>
         </Space>

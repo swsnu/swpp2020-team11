@@ -12,6 +12,8 @@ export const stubInitialState = {
     plan: null,
     reservation: null,
     history: [],
+    review: [],
+    reviewDetail: [],
   },
 };
 

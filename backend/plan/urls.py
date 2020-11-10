@@ -3,7 +3,8 @@ from plan import views
 
 urlpatterns = [
     path('', views.plan, name='plan'),
+    path('token/', views.token, name='token'),
     path('history/', views.history, name='history'),
-    path('review/<int:id>/', views.reviewDetail, name='reviewDetail'),
+    path('review/<int:ids>/', views.review_detail, name='reviewDetail'),
     path('review/', views.review, name='review')
 ]
