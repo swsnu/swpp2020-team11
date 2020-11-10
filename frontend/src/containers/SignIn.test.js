@@ -9,13 +9,15 @@ import { getMockStore, stubInitialState } from '../test-utils/mocks';
 import { Route, Switch } from 'react-router-dom';
 import * as actionCreators from '../store/actions/account';
 
+history.location.pathname = '/sign_in';
+
 function mockSignIn(initialState) {
   const mockStore = getMockStore(initialState);
   return (
     <Provider store={ mockStore }>
       <ConnectedRouter history={ history }>
         <Switch>
-          <Route path='/' exact component={ SignIn }/>
+          <Route path='/sign_in' exact component={ SignIn }/>
         </Switch>
       </ConnectedRouter>
     </Provider>
