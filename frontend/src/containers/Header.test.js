@@ -4,16 +4,9 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Header from './Header';
 import { history } from '../store/store';
-import { getMockStore, stubInitialState } from '../test-utils/mocks';
+import { getMockStore, stubInitialState, stubAccount } from '../test-utils/mocks';
 import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 import * as actionCreators from '../store/actions/account';
-
-const stubAccount = {
-  isLoggedIn: true,
-  user: {
-    id: 10,
-  },
-};
 
 describe('<Header />', () => {
   let header;

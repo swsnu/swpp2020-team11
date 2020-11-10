@@ -15,6 +15,14 @@ export const stubInitialState = {
   },
 };
 
+export const stubAccount = {
+  isLoggedIn: true,
+  user: {
+    id: 10,
+  },
+};
+
+
 const getMockAccountReducer = (initialState) => jest.fn(
   (initialState) => (state = initialState, action) => {
     switch (action.type) {
