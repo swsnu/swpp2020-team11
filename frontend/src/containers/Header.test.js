@@ -7,6 +7,7 @@ import { history } from '../store/store';
 import { getMockStore, stubInitialState } from '../test-utils/mocks';
 import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 
+
 const stubAccount = {
   isLoggedIn: true,
   user: {
