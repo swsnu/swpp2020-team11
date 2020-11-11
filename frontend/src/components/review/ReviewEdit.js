@@ -1,6 +1,6 @@
 import React from 'react';
 import { Steps, Rate, Input, Space, Button, Tag } from 'antd';
-import './ReviewCreate.css';
+import './ReviewEdit.css';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 import { withRouter } from 'react-router-dom';
@@ -26,7 +26,7 @@ class ReviewEdit extends React.Component {
           comment: res[i].content, current: i });
       });
   }
-  onChangeCurrent(current, review) {
+  onChangeCurrent(current) {
     if (!this.state.save) {
       const result = window.confirm('The change will be lost.');
       if (!result) {
@@ -61,18 +61,18 @@ class ReviewEdit extends React.Component {
     if (!this.props.isLoggedIn) {
       this.props.history.push('/sign_in');
     }
-    if (this.props.reviewDetail.length != 0) {
+    const review = this.props.reviewDetail.filter((review)=>
+      review.id==this.props.match.params.id)[0];
+    if (review) {
       const { Step } = Steps;
       const { TextArea } = Input;
       const score = this.state.score;
       const comment = this.state.comment;
       const validModify = (comment=='');
-      const review = this.props.reviewDetail.filter((review)=>
-        review.id==this.props.match.params.id)[0];
       return (
         <div className='reviewEdit'>
           <Steps current={this.state.current}
-            onChange={(current) => this.onChangeCurrent(current, review)}>
+            onChange={(current) => this.onChangeCurrent(current)}>
             <Step title='Place 1'/>
             <Step title='Place 2'/>
             <Step title='Place 3'/>
