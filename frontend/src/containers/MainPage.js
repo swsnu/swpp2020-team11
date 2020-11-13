@@ -44,6 +44,7 @@ class MainPage extends Component {
       <Image
         src={ img }
         preview={ false }
+        width="350px"
         className="main-image"
         onMouseOver={ (e) => (e.target.src = hoverImg) }
         onMouseOut={ (e) => (e.target.src = img) }
