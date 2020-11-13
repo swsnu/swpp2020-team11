@@ -51,6 +51,22 @@ export const stubSinglePlan = {
   },
 };
 
+export const stubReservation = {
+  phoneNumver: '010-5882-5467',
+  taxiType: '개인 택시',
+  carNumber: '서23울 3175',
+  currentLocation: {
+    lat: 37.5291281,
+    lng: 127.0691572,
+  },
+  arrivalLocation: {
+    lat: 38.5291281,
+    lng: 128.0691572,
+  },
+  taxiImage: 'https://thewiki.ewr1.vultrobjects.com/data/ec8f98eb8' +
+    '298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png',
+};
+
 
 const getMockAccountReducer = (initialState) => jest.fn(
   (initialState) => (state = initialState, action) => {
