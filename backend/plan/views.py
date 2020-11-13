@@ -1,4 +1,5 @@
 import json
+import datetime
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
@@ -86,7 +87,7 @@ def history(request):
                       "img_urls": sce.image_urls, "tag": [feature.feature_name for feature in sce.features.all()]})
         date = plans[index].started_at + timezone.timedelta(hours=9)
         places.append({"id": half.id, "place": place, "date": date.strftime("%Y-%m-%d")})
-    return JsonResponse({"history": places}, status=200)
+    return JsonResponse({"history": places})
 
 
 @require_http_methods(['GET', 'POST'])
@@ -95,7 +96,7 @@ def review(request):
     if request.method == 'GET':
         reviews = Review.objects.filter(user_id=request.user.id)
         review_all = [review.asdict() for review in reviews]
-        return JsonResponse({'review': review_all}, status=200)
+        return JsonResponse({'review': review_all})
 
     req_data = json.loads(request.body.decode())
     reviews = req_data.get('review', None)
@@ -109,7 +110,7 @@ def review(request):
                              score=i.get('score'), content=i.get('content'))
         review_save.save()
         new_review.append(review_save.asdict())
-    return JsonResponse({'review': new_review}, status=201)
+    return JsonResponse({'review': new_review}, status=HttpStatusCode.Created)
 
 
 @require_http_methods(['GET', 'PUT'])
@@ -135,7 +136,7 @@ def review_detail(request, ids):
         scenary_review['name'] = scenary_place.name
         scenary_review['tag'] = [feature.feature_name for feature in scenary_place.features.all()]
         detail = [activity_review, dinner_review, scenary_review]
-        return JsonResponse({'reviewDetail': detail}, status=200)
+        return JsonResponse({'reviewDetail': detail})
 
     req_data = json.loads(request.body.decode())
     modify_review = Review.objects.get(id=ids)
@@ -144,34 +145,41 @@ def review_detail(request, ids):
     modify_review.score = req_data.get('score', None)
     modify_review.content = req_data.get('content', None)
     modify_review.save()
-    return JsonResponse(modify_review.asdict(), status=201)
+    return JsonResponse(modify_review.asdict(), status=HttpStatusCode.Created)
 
 
 @require_http_methods(['GET'])
 @ensure_csrf_cookie
 def token(request):
-    return HttpResponse(status=204)
+    return HttpResponse(status=HttpStatusCode.NoContent)
 
 
 @ensure_csrf_cookie
-@require_http_methods(['GET'])
+@require_http_methods(['POST'])
 @login_required
 def plan_reservation(request):
-    if request.method == 'GET':
-        taxi_color = 'orange'
-        phone_number = '010-5882-5467'
-        car_number = '서23울 3175'
-        estimated_arrival_time = None
-        current_location = None
-        now = time.strftime('%H%M%S')  # Current time 22H 31M 17S -> now = 223117
-        now = int(now) + 500
-        if (now % 10000 / 100) > 60:
-            now = now + 4000
-            if now > 240000:
-                now = now - 240000
-        estimated_arrival_location = str(now)
+    # it should be 꺼내오기 from database
+    taxi_color = 'orange'
+    phone_number = '010-5882-5467'
+    taxi_type = '개인 택시'
+    car_number = '서23울 3175'
+    KST = datetime.timezone(datetime.timedelta(hours=9))
+    now = datetime.datetime.now(tz=KST)  # Current time 22H 31M 17S -> now = 223117
+    arrival_time = now + datetime.timedelta(hours=5)
+    current_location = {
+        "lat": 37.5291281,
+        "lng": 127.0691572,
+    }
+    arrival_location = {
+        "lat": 38.5291281,
+        "lng": 128.0691572,
+    }
 
-        return JsonResponse({"taxi_color": taxi_color, "phone_number": phone_number,
-                             "car_number": car_number, "estimated_arrival_time": estimated_arrival_time,
-                             "current_location": current_location,
-                             "estimated_arrival_location": estimated_arrival_location}, status=200)
+    taxi_information = {
+        "taxiImage": 'https://thewiki.ewr1.vultrobjects.com/data/ec8f98eb8'
+                     '298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png',
+        "taxiType": taxi_type, "phoneNumber": phone_number,
+        "carNumber": car_number, "arrivalTime": arrival_time,
+        "currentLocation": current_location, "arrivalLocation": arrival_location}
+
+    return JsonResponse({"taxi": taxi_information})

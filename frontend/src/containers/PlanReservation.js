@@ -1,37 +1,48 @@
 import React, { Component } from 'react';
-import taxiImg from '../assets/img/reservationInfo_taxi1.png';
 import { withRouter } from 'react-router';
-import { Typography } from 'antd';
+import { Image, Button, Typography } from 'antd';
 import './PlanReservation.css';
 import { connect } from 'react-redux';
+
 const { Paragraph } = Typography;
 
-// import moment from 'moment';
+import moment from 'moment';
+import { Marker, StaticGoogleMap } from 'react-static-google-map';
 
 class PlanReservation extends Component {
-  // let [time, setTime] = useState(moment.duration(0));
+  state = {
+    time: 0,
+  };
 
   render() {
+    const arrivalTime = moment(this.props.taxi.arrivalTime);
+    const waitTime = arrivalTime.diff(moment(), 'minutes');
     return (
-      <div className = "PlanReservation">
-        <img
-          src={ taxiImg }
+      <div className="PlanReservation">
+        <Image
+          preview={ false }
+          src={ this.props.taxi.taxiImage }
           className="TaxiImage"
         />
         <div className="GoogleAPI">
-          <Paragraph>구글맵!!!</Paragraph>
+          <StaticGoogleMap size="320x320" zoom="11"
+            apiKey={ process.env.REACT_APP_API_KEY }>
+            <Marker.Group label="T" color="red">
+              <Marker location={ this.props.taxi.arrivalLocation }/>
+            </Marker.Group>
+          </StaticGoogleMap>
         </div>
         <div className="TaxiInfo">
-          <Paragraph>개인 택시</Paragraph>
-          <Paragraph>서23울 3175</Paragraph>
-          <Paragraph>010-5882-5467 </Paragraph>
-          <Paragraph>3분 뒤 도착 예정입니다. </Paragraph>
+          <Paragraph>{ this.props.taxi.taxiType }</Paragraph>
+          <Paragraph>{ this.props.taxi.carNumber }</Paragraph>
+          <Paragraph>{ this.props.taxi.phoneNumber } </Paragraph>
+          <Paragraph>{ waitTime } 분 뒤 도착 예정입니다. </Paragraph>
         </div>
-        <div className="ToMainPanel"
+        <Button className="ToMainPanel"
           onClick={ () => this.props.history.push('/') }
         >
-          <Paragraph>메인 화면으로 돌아가기</Paragraph>
-        </div>
+          메인 화면으로 돌아가기
+        </Button>
       </div>
     );
   };
@@ -39,8 +50,7 @@ class PlanReservation extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.account.isLoggedIn,
-    user: state.account.user,
+    taxi: state.plan.reservation.taxi,
   };
 };
 
