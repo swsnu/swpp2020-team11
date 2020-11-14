@@ -85,7 +85,6 @@ describe('<History/>', () => {
   let history1;
   let spyGetHistory;
   let spyGetReview;
-  let spyHistoryPush;
   beforeEach(() => {
     history1 = function mockHistory(initialState) {
       const mockStore = getMockStore(initialState);
@@ -109,8 +108,7 @@ describe('<History/>', () => {
         return (dispatch) => {
         };
       });
-    spyHistoryPush = jest.spyOn(history, 'push')
-      .mockImplementation((path) => {});
+
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: (query) => jest.fn().mockImplementation((query) => ({
@@ -143,8 +141,8 @@ describe('<History/>', () => {
     expect(historyInstance.state.page).toEqual(2);
   });
   it('without login', () => {
-    mount(history1(initialStateWithoutLogin));
-    expect(spyHistoryPush).toHaveBeenCalledTimes(1);
+    const component = mount(history1(initialStateWithoutLogin));
+    expect(component.find('.empty')).toHaveLength(1);
   });
 });
 

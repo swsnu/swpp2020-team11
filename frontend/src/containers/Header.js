@@ -6,8 +6,13 @@ import { LoginOutlined, UserOutlined } from '@ant-design/icons';
 import { Dropdown, Image, Row, Col } from 'antd';
 import logoImg from '../assets/img/logo.png';
 import './Header.css';
+import * as actionCreators from '../store/actions/index';
 
 class Header extends Component {
+  componentDidMount() {
+    this.props.onSetAccount();
+  }
+
   render() {
     return (
       <Row align="middle">
@@ -46,4 +51,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(withRouter(Header));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSetAccount: () => dispatch(actionCreators.checkAccount()),
+  };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));
