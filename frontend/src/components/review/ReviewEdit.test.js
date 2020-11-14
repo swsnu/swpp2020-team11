@@ -11,12 +11,18 @@ import ReviewEdit from './ReviewEdit';
 const stubLogin1 = { isLoggedIn: false };
 const stubLogin2 = { isLoggedIn: true };
 const reviewDetail = [
-  { 'id': 1, 'plan': 1, 'place': 1, 'score': 4,
-    'content': 'temp', 'url': '../../assets/img/porto1.png' },
-  { 'id': 2, 'plan': 1, 'place': 2, 'score': 3,
-    'content': 'temp2', 'url': '../../assets/img/porto1.png' },
-  { 'id': 3, 'plan': 1, 'place': 3, 'score': 2,
-    'content': 'temp3', 'url': '../../assets/img/porto1.png' },
+  {
+    'id': 1, 'plan': 1, 'place': 1, 'score': 4,
+    'content': 'temp', 'url': '../../assets/img/porto1.png',
+  },
+  {
+    'id': 2, 'plan': 1, 'place': 2, 'score': 3,
+    'content': 'temp2', 'url': '../../assets/img/porto1.png',
+  },
+  {
+    'id': 3, 'plan': 1, 'place': 3, 'score': 2,
+    'content': 'temp3', 'url': '../../assets/img/porto1.png',
+  },
 ];
 const initialStateWithoutLogin = {
   account: stubLogin1,
@@ -43,6 +49,23 @@ describe('<ReviewCreate/>', () => {
   let spyModifyReview;
   let spyHistoryPush;
   let spyConfirm;
+
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: (query) => jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }))(query),
+    });
+  });
+
   beforeEach(() => {
     history.location.pathname = '/review/2/edit';
     reviewEdit = function mockReviewEdit(initialState) {
@@ -51,7 +74,7 @@ describe('<ReviewCreate/>', () => {
         <Provider store={ mockStore }>
           <ConnectedRouter history={ history }>
             <Switch>
-              <Route path='/review/:id/edit' exact render={() => <ReviewEdit/>}/>
+              <Route path='/review/:id/edit' exact render={ () => <ReviewEdit/> }/>
             </Switch>
           </ConnectedRouter>
         </Provider>
@@ -72,7 +95,8 @@ describe('<ReviewCreate/>', () => {
         };
       });
     spyHistoryPush = jest.spyOn(history, 'push')
-      .mockImplementation((path) => {});
+      .mockImplementation((path) => {
+      });
   });
 
   afterEach(() => {

@@ -10,7 +10,7 @@ const stubUser = {
 describe('account Reducer', () => {
   it('should return default state', () => {
     const newState = reducer(undefined, {}); // initialize
-    expect(newState).toEqual({ isLoggedIn: false, user: null });
+    expect(newState).toEqual({ isLoggedIn: false, popUpVisible: false, user: null, personalityAnswer: {} });
   });
   it('should sign in', () => {
     const newState = reducer(undefined, {
@@ -19,7 +19,9 @@ describe('account Reducer', () => {
     });
     expect(newState).toEqual({
       isLoggedIn: true,
+      popUpVisible: false,
       user: stubUser,
+      personalityAnswer: {},
     });
   });
 
@@ -29,7 +31,23 @@ describe('account Reducer', () => {
     });
     expect(newState).toEqual({
       isLoggedIn: false,
+      popUpVisible: false,
       user: null,
+      personalityAnswer: {},
+    });
+  });
+
+  it('should set personality', () => {
+    const newState = reducer(undefined, {
+      type: actionTypes.SetPersonality,
+      index: 1,
+      value: 10,
+    });
+    expect(newState).toEqual({
+      isLoggedIn: false,
+      popUpVisible: false,
+      user: null,
+      personalityAnswer: { 1: 10 },
     });
   });
 });

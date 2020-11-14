@@ -10,7 +10,7 @@ from common.util.http_util import HttpStatusCode
 import time
 
 from account.models import User
-from .models import Plan, HalfDayOff, Review, Place
+from .models import Plan, HalfDayOff, Review, Place, TransportationReservation, Taxi
 
 
 # dummy plan function for test
