@@ -45,6 +45,7 @@ describe('account Reducer', () => {
     });
     expect(newState).toEqual({
       isLoggedIn: false,
+      popUpVisible: false,
       user: null,
       personalityAnswer: { 1: 10 },
     });
