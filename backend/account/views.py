@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
@@ -10,7 +11,7 @@ from django.db import IntegrityError
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
-from .models import User
+from .models import User, Personality, PersonalityTestQuestion
 
 
 @ensure_csrf_cookie
@@ -58,3 +59,23 @@ def sign_up(request):
     except IntegrityError:
         return HttpResponse(status=HttpStatusCode.NoContent)
     return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
+
+
+@ensure_csrf_cookie
+@require_http_methods(['GET', 'POST'])
+@login_required
+def personality_check(request):
+    if request.method == 'GET':
+        questions = PersonalityTestQuestion.objects.all()
+        return JsonResponse({
+            'questions': [question.as_dict() for question in questions],
+        })
+    req = json.loads(request.body.decode())
+    req = {int(k): int(v) for k, v in req.items()}
+    questions = PersonalityTestQuestion.objects.filter(id__in=list(req.keys())).all()
+    summarize = defaultdict(int)
+    for question in questions:
+        summarize[question.type] += question.weight * req.get(question.id, 0)
+    for personality_type, value in summarize.items():
+        Personality(user=request.user, score=value, type=personality_type).save()
+    return HttpResponse()

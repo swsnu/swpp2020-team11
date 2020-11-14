@@ -58,3 +58,11 @@ export const signUp = (email, nickname, password, phoneNumber) => {
       });
   };
 };
+
+
+export const setPersonality = (index, answer) => {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.SetPersonality, index: index, value: answer });
+  };
+};
+

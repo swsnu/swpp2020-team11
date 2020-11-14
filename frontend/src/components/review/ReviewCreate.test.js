@@ -89,6 +89,23 @@ describe('<ReviewCreate/>', () => {
   let spyCreateReview;
   let spyHistoryPush;
   let spyAlert;
+
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: (query) => jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // Deprecated
+        removeListener: jest.fn(), // Deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      }))(query),
+    });
+  });
+
   beforeEach(() => {
     history.location.pathname = '/review/1/create';
     reviewCreate = function mockReviewCreate(initialState) {
@@ -97,7 +114,7 @@ describe('<ReviewCreate/>', () => {
         <Provider store={ mockStore }>
           <ConnectedRouter history={ history }>
             <Switch>
-              <Route path='/review/:id/create' exact render={() => <ReviewCreate/>}/>
+              <Route path='/review/:id/create' exact render={ () => <ReviewCreate/> }/>
             </Switch>
           </ConnectedRouter>
         </Provider>
@@ -114,7 +131,8 @@ describe('<ReviewCreate/>', () => {
         };
       });
     spyHistoryPush = jest.spyOn(history, 'push')
-      .mockImplementation((path) => {});
+      .mockImplementation((path) => {
+      });
     spyAlert = jest.spyOn(window, 'alert')
       .mockImplementation(() => {
         return;

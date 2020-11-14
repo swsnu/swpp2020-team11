@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.test import TestCase, Client
 
 from common.util.test_utils import APITestCase, NotAllowedTestCase
-from account.models import User
+from account.models import User, PersonalityTestQuestion, Personality, PersonalityType
 
 stub_user = {
     'email': 'stub@email.com',
@@ -28,10 +28,14 @@ class AccountNotAllowedTestCase(NotAllowedTestCase):
         {'url': 'logout/', 'method': 'post'},
         {'url': 'logout/', 'method': 'put'},
         {'url': 'logout/', 'method': 'delete'},
+        {'url': 'personality_check/', 'method': 'put'},
+        {'url': 'personality_check/', 'method': 'delete'},
     ]
 
     NOT_AUTHORIZED_CHECK_CASE = [
         {'url': 'logout/', 'method': 'get'},
+        {'url': 'personality_check/', 'method': 'get'},
+        {'url': 'personality_check/', 'method': 'post'},
     ]
 
 
@@ -121,6 +125,28 @@ class SignOutTest(APITestCase):
         response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(auth_logout_function.call_count, 1)
+
+
+class PersonalityCheckTest(APITestCase):
+    url = '/api/user/personality_check/'
+
+    def _setup_database(self):
+        for f_type in ['O', 'C', 'E', 'A', 'N']:
+            p_type = PersonalityType(classification_type="big_five_factor", personality_type=f_type)
+            p_type.save()
+            for i in range(10):
+                PersonalityTestQuestion(question=f'type {f_type} question {i}', type=p_type, weight=5).save()
+
+    def test_get_questions_with_valid_case(self):
+        response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 200)
+
+    def test_save_personality_with_valid_case(self):
+        test_result = {str(i): '3' for i in range(50)}
+        response = self.client.post(self.url, test_result,
+                                   content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Personality.objects.count(), 5)
 
 
 class UserModelTest(TestCase):

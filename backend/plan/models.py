@@ -1,6 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-from account.models import User
+from account.models import User, Personality
 
 class Plan(models.Model):
     user = models.ForeignKey(
@@ -150,8 +150,6 @@ class Suggestion(models.Model):
     content = models.CharField(max_length=32)
     status = models.IntegerField()  #temporary
 
-class Personality(models.Model):
-    type = models.IntegerField() #temporary
 
 class Preference(models.Model):
     personality = models.ForeignKey(

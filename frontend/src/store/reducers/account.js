@@ -4,6 +4,7 @@ const initialState = {
   isLoggedIn: false,
   popUpVisible: false,
   user: null,
+  personalityAnswer: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -16,6 +17,13 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.SignUp:
       return { ...state, isLoggedIn: true, user: action.value, popUpVisible: true };
+
+    case actionTypes.SetPersonality:
+      const newPersonalityAnswer = {
+        ...state.personalityAnswer,
+        [action.index]: action.value,
+      };
+      return { ...state, personalityAnswer: newPersonalityAnswer };
 
     default:
       break;

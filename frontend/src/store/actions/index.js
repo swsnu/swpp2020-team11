@@ -2,6 +2,7 @@ export {
   signIn,
   signOut,
   signUp,
+  setPersonality,
 } from './account';
 
 export {

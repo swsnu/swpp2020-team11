@@ -167,8 +167,10 @@ describe('ActionCreators', () => {
       .mockImplementation(() => {
       });
     store.dispatch(actionCreators.signUp(
-      { 'email': 'dummy', 'password': 'dummy',
-        'nickname': 'dummy', 'phoneNumber': 'dummy' })).then(() => {
+      {
+        'email': 'dummy', 'password': 'dummy',
+        'nickname': 'dummy', 'phoneNumber': 'dummy',
+      })).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeFalsy();
       expect(newState.account.user).toBeNull();
@@ -194,8 +196,10 @@ describe('ActionCreators', () => {
       });
 
     store.dispatch(actionCreators.signUp(
-      { 'email': 'dummy', 'password': 'dummy',
-        'nickname': 'dummy', 'phoneNumber': 'dummy' })).then(() => {
+      {
+        'email': 'dummy', 'password': 'dummy',
+        'nickname': 'dummy', 'phoneNumber': 'dummy',
+      })).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeFalsy();
       expect(newState.account.user).toBeNull();
@@ -218,13 +222,21 @@ describe('ActionCreators', () => {
       });
 
     store.dispatch(actionCreators.signUp(
-      { 'email': 'dummy', 'password': 'dummy',
-        'nickname': 'dummy', 'phoneNumber': 'dummy' })).then(() => {
+      {
+        'email': 'dummy', 'password': 'dummy',
+        'nickname': 'dummy', 'phoneNumber': 'dummy',
+      })).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeTruthy();
       expect(newState.account.user).toStrictEqual(stubUser);
       expect(spyAxios).toHaveBeenCalledTimes(1);
       done();
     });
+  });
+
+  it(`'setPersonality' should call reducer if function is called`, () => {
+    store.dispatch(actionCreators.setPersonality(1, 10));
+    const newState = store.getState();
+    expect(newState.account.personalityAnswer).toStrictEqual({ 1: 10 });
   });
 });

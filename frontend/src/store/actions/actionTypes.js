@@ -1,6 +1,7 @@
 export const SignUp = 'SignUp';
 export const SignIn = 'SignIn';
 export const SignOut = 'SignOut';
+export const SetPersonality = 'SetPersonality';
 export const MakePersonality = 'MakePersonality';
 export const GetPlan = 'GetPlan';
 export const GetReservation = 'GetReservation';
