@@ -10,7 +10,7 @@ const stubUser = {
 describe('account Reducer', () => {
   it('should return default state', () => {
     const newState = reducer(undefined, {}); // initialize
-    expect(newState).toEqual({ isLoggedIn: false, user: null });
+    expect(newState).toEqual({ isLoggedIn: false, popUpVisible: false, user: null });
   });
   it('should sign in', () => {
     const newState = reducer(undefined, {
@@ -19,6 +19,7 @@ describe('account Reducer', () => {
     });
     expect(newState).toEqual({
       isLoggedIn: true,
+      popUpVisible: false,
       user: stubUser,
     });
   });
@@ -29,6 +30,7 @@ describe('account Reducer', () => {
     });
     expect(newState).toEqual({
       isLoggedIn: false,
+      popUpVisible: false,
       user: null,
     });
   });
