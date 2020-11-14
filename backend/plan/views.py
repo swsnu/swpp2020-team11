@@ -7,17 +7,16 @@ from django.utils import timezone
 
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
-import time
 
 from account.models import User
-from .models import Plan, HalfDayOffReservation, Review, Place, TransportationReservation, Taxi
+from .models import Plan, HalfDayOffReservation, Review, Place
 
 
 # dummy plan function for test
 @ensure_csrf_cookie
 @require_http_methods(['POST'])
 @login_required
-def plan(request):
+def suggested_plan(request):
     result = {
         'imageUrls': [
             'http://www.puzzlesarang.com/shop/data/goods/1569406172621m0.jpg',
@@ -121,12 +120,6 @@ def review_detail(request, ids):
     return JsonResponse(modify_review.asdict(), status=HttpStatusCode.Created)
 
 
-@require_http_methods(['GET'])
-@ensure_csrf_cookie
-def token(request):
-    return HttpResponse(status=HttpStatusCode.NoContent)
-
-
 @ensure_csrf_cookie
 @require_http_methods(['POST'])
 @login_required
@@ -137,8 +130,8 @@ def plan_reservation(request):
     taxi = trans_reservation.taxi
     taxi_image = 'https://thewiki.ewr1.vultrobjects.com/data/' \
                  'ec8f98eb8298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png'
-    KST = datetime.timezone(datetime.timedelta(hours=9))
-    now = datetime.datetime.now(tz=KST)  # Current time 22H 31M 17S -> now = 223117
+    kst = datetime.timezone(datetime.timedelta(hours=9))
+    now = datetime.datetime.now(tz=kst)  # Current time 22H 31M 17S -> now = 223117
     # we should create calculate algorithm
     arrival_time = now + datetime.timedelta(hours=5)
     # we should decide how we can get current location of taxi
