@@ -56,8 +56,41 @@ class User(AbstractBaseUser, PermissionsMixin):
         return {'id': self.id, 'email': self.email}
 
 
+class PersonalityType(models.Model):
+    FIVE_FACTOR = (
+        ('O', 'openness'),
+        ('C', 'conscientiousness'),
+        ('E', 'extraversion'),
+        ('A', 'agreeableness'),
+        ('N', 'neuroticism'),
+    )
+    classification_type = models.CharField(max_length=30)
+    personality_type = models.CharField(max_length=2, choices=FIVE_FACTOR)
+
+
 class PersonalityTestQuestion(models.Model):
     question = models.TextField()
+    type = models.ForeignKey(
+        PersonalityType,
+        on_delete=models.CASCADE,
+        related_name='questions',
+        null=True,
+    )
+    weight = models.FloatField(null=True)
 
     def as_dict(self):
         return {'id': self.id, 'question': self.question}
+
+
+class Personality(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='personality',
+    )
+    score = models.FloatField()
+    type = models.ForeignKey(
+        PersonalityType,
+        on_delete=models.CASCADE,
+        related_name='personalities'
+    )
