@@ -7,6 +7,7 @@ export const stubInitialState = {
   account: {
     isLoggedIn: false,
     user: null,
+    personalityAnswer: {},
   },
   plan: {
     plan: null,

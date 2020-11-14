@@ -169,7 +169,7 @@ describe('ActionCreators', () => {
     store.dispatch(actionCreators.signUp(
       {
         'email': 'dummy', 'password': 'dummy',
-        'nickname': 'dummy', 'phoneNumber': 'dummy'
+        'nickname': 'dummy', 'phoneNumber': 'dummy',
       })).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeFalsy();
@@ -198,7 +198,7 @@ describe('ActionCreators', () => {
     store.dispatch(actionCreators.signUp(
       {
         'email': 'dummy', 'password': 'dummy',
-        'nickname': 'dummy', 'phoneNumber': 'dummy'
+        'nickname': 'dummy', 'phoneNumber': 'dummy',
       })).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeFalsy();
@@ -224,7 +224,7 @@ describe('ActionCreators', () => {
     store.dispatch(actionCreators.signUp(
       {
         'email': 'dummy', 'password': 'dummy',
-        'nickname': 'dummy', 'phoneNumber': 'dummy'
+        'nickname': 'dummy', 'phoneNumber': 'dummy',
       })).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeTruthy();
@@ -234,11 +234,9 @@ describe('ActionCreators', () => {
     });
   });
 
-  it(`'setPersonality' should call reducer if function is called`, (done) => {
-    store.dispatch(actionCreators.setPersonality(1, 10)).then(() => {
-      const newState = store.getState();
-      expect(newState.account.personalityAnswer).toStrictEqual({ 1: 10 });
-      done();
-    });
+  it(`'setPersonality' should call reducer if function is called`, () => {
+    store.dispatch(actionCreators.setPersonality(1, 10));
+    const newState = store.getState();
+    expect(newState.account.personalityAnswer).toStrictEqual({ 1: 10 });
   });
 });
