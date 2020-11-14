@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
-from .models import User
+from .models import User, PersonalityTestQuestion
 
 
 @ensure_csrf_cookie
@@ -58,3 +58,18 @@ def sign_up(request):
     except IntegrityError:
         return HttpResponse(status=HttpStatusCode.NoContent)
     return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
+
+
+@ensure_csrf_cookie
+@require_http_methods(['GET', 'POST'])
+@login_required
+def personality_check(request):
+    if request.method == 'GET':
+        questions = PersonalityTestQuestion.objects.all()
+        return JsonResponse({
+            'questions': [question.as_dict() for question in questions],
+        })
+    else:
+        print(json.loads(request.body.decode()))
+        return HttpResponse()
+

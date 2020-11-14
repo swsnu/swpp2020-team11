@@ -20,7 +20,7 @@ module.exports = {
     'react',
   ],
   'rules': {
-    'max-len': ['error', { 'code': 90 }],
+    'max-len': ['error', { 'code': 120 }],
     'indent': ['error', 2, { 'SwitchCase': 1 }],
     'object-curly-spacing': ['error', 'always'],
     'react/prop-types': 0,

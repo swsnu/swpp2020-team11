@@ -54,3 +54,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def as_dict(self):
         return {'id': self.id, 'email': self.email}
+
+
+class PersonalityTestQuestion(models.Model):
+    question = models.TextField()
+
+    def as_dict(self):
+        return {'id': self.id, 'question': self.question}
