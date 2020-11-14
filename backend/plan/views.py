@@ -10,7 +10,7 @@ from common.util.http_util import HttpStatusCode
 import time
 
 from account.models import User
-from .models import Plan, HalfDayOff, Review, Place, TransportationReservation, Taxi
+from .models import Plan, HalfDayOffReservation, Review, Place, TransportationReservation, Taxi
 
 
 # dummy plan function for test
@@ -44,7 +44,7 @@ def plan(request):
 @login_required
 def history(request):
     plans = Plan.objects.order_by('started_at').filter(user_id=request.user.id)
-    halfdayoff = HalfDayOff.objects.filter(id__in=[plan.id for plan in plans])
+    halfdayoff = HalfDayOffReservation.objects.filter(plan_id__in=[plan.id for plan in plans])
     places = []
     for index, half in enumerate(halfdayoff):
         place = []
@@ -59,7 +59,7 @@ def history(request):
         place.append({"id": sce.id, "lat": sce.latitude, "lng": sce.longitude, "name": sce.name,
                       "img_urls": sce.image_urls, "tag": [feature.feature_name for feature in sce.features.all()]})
         date = plans[index].started_at + timezone.timedelta(hours=9)
-        places.append({"id": half.id, "place": place, "date": date.strftime("%Y-%m-%d")})
+        places.append({"id": half.plan_id, "place": place, "date": date.strftime("%Y-%m-%d")})
     return JsonResponse({"history": places})
 
 
@@ -91,7 +91,7 @@ def review(request):
 def review_detail(request, ids):
     if request.method == 'GET':
         reviews = Review.objects.get(id=ids)
-        plans = HalfDayOff.objects.get(id=reviews.plan_id)
+        plans = HalfDayOffReservation.objects.get(plan_id=reviews.plan_id)
         user_id = request.user.id
         activity_place = plans.activity.place
         activity_review = Review.objects.get(user_id=user_id, place_id=activity_place.id).asdict()
@@ -132,13 +132,16 @@ def token(request):
 @login_required
 def plan_reservation(request):
     # it should be 꺼내오기 from database
-    taxi_color = 'orange'
-    phone_number = '010-5882-5467'
-    taxi_type = '개인 택시'
-    car_number = '서23울 3175'
+    plan = Plan.objects.get(user=request.user)
+    trans_reservation = plan.reservation.transportation
+    taxi = trans_reservation.taxi
+    taxi_image = 'https://thewiki.ewr1.vultrobjects.com/data/' \
+                 'ec8f98eb8298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png'
     KST = datetime.timezone(datetime.timedelta(hours=9))
     now = datetime.datetime.now(tz=KST)  # Current time 22H 31M 17S -> now = 223117
+    # we should create calculate algorithm
     arrival_time = now + datetime.timedelta(hours=5)
+    # we should decide how we can get current location of taxi
     current_location = {
         "lat": 37.5291281,
         "lng": 127.0691572,
@@ -149,10 +152,9 @@ def plan_reservation(request):
     }
 
     taxi_information = {
-        "taxiImage": 'https://thewiki.ewr1.vultrobjects.com/data/ec8f98eb8'
-                     '298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png',
-        "taxiType": taxi_type, "phoneNumber": phone_number,
-        "carNumber": car_number, "arrivalTime": arrival_time,
+        "taxiImage": taxi_image,
+        "taxiType": taxi.company, "phoneNumber": f'{taxi.phone_number}',
+        "carNumber": taxi.car_number, "arrivalTime": arrival_time,
         "currentLocation": current_location, "arrivalLocation": arrival_location}
 
     return JsonResponse({"taxi": taxi_information})
