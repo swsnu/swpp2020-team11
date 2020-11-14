@@ -39,6 +39,14 @@ def sign_out(request):
 
 
 @ensure_csrf_cookie
+@require_http_methods(['GET'])
+def token(request):
+    if auth.SESSION_KEY in request.session:
+        return JsonResponse(request.user.as_dict())
+    return HttpResponse(status=HttpStatusCode.UnAuthorized)
+
+
+@ensure_csrf_cookie
 @require_http_methods(['GET', 'POST'])
 def sign_up(request):
     if request.method == 'GET':

@@ -28,6 +28,9 @@ class AccountNotAllowedTestCase(NotAllowedTestCase):
         {'url': 'logout/', 'method': 'post'},
         {'url': 'logout/', 'method': 'put'},
         {'url': 'logout/', 'method': 'delete'},
+        {'url': 'token/', 'method': 'post'},
+        {'url': 'token/', 'method': 'put'},
+        {'url': 'token/', 'method': 'delete'},
         {'url': 'personality_check/', 'method': 'put'},
         {'url': 'personality_check/', 'method': 'delete'},
     ]
@@ -115,6 +118,19 @@ class SignInTest(APITestCase):
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(auth_login_function.call_count, 0)
+
+
+class TokenTest(APITestCase):
+    url = '/api/user/token/'
+
+    def test_get_with_valid_request(self):
+        response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_with_not_logged_in_request(self):
+        self.client.logout()
+        response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 401)
 
 
 class SignOutTest(APITestCase):
