@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Form, Input, Button, Checkbox, Modal } from 'antd';
+import { Form, Modal } from 'antd';
 import SignUp from './SignUp';
 import { mount } from 'enzyme';
 import { ConnectedRouter } from 'connected-react-router';
@@ -11,11 +11,10 @@ import * as actionCreators from '../store/actions/account';
 
 history.location.pathname = '/sign_up';
 
-jest.useFakeTimers();
-
-const loggedInState = {
+const popUpState = {
   account: {
     isLoggedIn: true,
+    popUpVisible: true,
     user: null,
   },
   plan: {
@@ -107,39 +106,22 @@ describe('<SignUp />', () => {
     button.simulate('click');
     expect(spySignIn).toHaveBeenCalledTimes(1);
   });
-
-  it('should show modal if user submits.', () => {
-    const component = mount(signUp(loggedInState));
-    const button = component.find('.signup-form-button button');
-    jest.spyOn(actionCreators, 'signUp')
-      .mockImplementation(() => {
-        return (dispatch) => {};
-      });
+  it('should redirect to main page if user click no button.', () => {
+    const component = mount(signUp(popUpState));
+    const button = component.find('.no-button button');
     button.simulate('click');
-    jest.runAllTimers();
-    const wrapper = component.find('SignUp').instance();
-    expect(wrapper.state.popUpVisible).toBeTruthy();
-  });
-
-  it('should redirect to check page if user click forgot button.', () => {
-    const component = mount(signUp(loggedInState));
-    const button = component.find('.signup-form-button button');
-    jest.spyOn(actionCreators, 'signUp')
-      .mockImplementation(() => {
-        return (dispatch) => {};
-      });
-    button.simulate('click');
-    jest.advanceTimersByTime(2000);
-    component.update();
-    const noButton = component.find('.no-button button');
-    noButton.simulate('click');
     expect(spyHistory).toBeCalledWith('/');
   });
-
-  // it('should redirect to signup page if user click signup button.', () => {
-  //   const component = mount(signIn(stubInitialState));
-  //   const button = component.find('.signup-button button');
-  //   button.simulate('click');
-  //   expect(spyHistory).toBeCalledWith('/sign_up/');
-  // });
+  it('should redirect to check page if user click yes button.', () => {
+    const component = mount(signUp(popUpState));
+    const button = component.find('.yes-button button');
+    button.simulate('click');
+    expect(spyHistory).toBeCalledWith('/');
+  });
+  it('should redirect to main page if user click cancel button.', () => {
+    const component = mount(signUp(popUpState));
+    const button = component.find('.ant-modal-close-x');
+    button.simulate('click');
+    expect(spyHistory).toBeCalledWith('/');
+  });
 });

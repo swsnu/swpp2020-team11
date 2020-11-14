@@ -11,7 +11,6 @@ class SignUp extends Component {
     password: '',
     nickname: '',
     phoneNumber: '',
-    popUpVisible: false,
   };
 
   render() {
@@ -57,10 +56,6 @@ class SignUp extends Component {
     const handleConfirm = () => {
       this.props.onSignUp(this.state.email, this.state.nickname,
         this.state.password, this.state.phoneNumber);
-      setTimeout(() => {
-        this.props.isLoggedIn ?
-          this.setState({ popUpVisible: true }) : null;
-      }, 2000);
     };
 
     return (
@@ -155,9 +150,9 @@ class SignUp extends Component {
           </Form>
           <Modal
             title="Would you take a personality check?"
-            visible={ this.state.popUpVisible }
+            visible={ this.props.popUpVisible }
             closable={ true }
-            onCancel={ () => this.setState({ popUpVisible: false }) }
+            onCancel={ () => this.props.history.push('/') }
             footer={ [
               <Button
                 className="no-button"
@@ -186,7 +181,7 @@ class SignUp extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.account.isLoggedIn,
+    popUpVisible: state.account.popUpVisible,
   };
 };
 
