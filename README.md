@@ -43,8 +43,8 @@ at root repository, type the following commands
 
 ```
 cd backend
-coverage run --source='./asapgo' manage.py test && coverage report
+coverage run --source='.' manage.py test && coverage report
 # statement coverage
-coverage run --branch --source='./asapgo' manage.py test && coverage report
+coverage run --branch --source='.' manage.py test && coverage report
 # branch coverage
 ```

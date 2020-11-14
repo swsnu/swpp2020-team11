@@ -35,7 +35,16 @@ class SignIn extends Component {
           >
             <Form.Item
               name="email"
-              rules={[{ required: true, message: 'Please input Email!' }]}
+              rules={[
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
+                {
+                  required: true,
+                  message: 'Please input your E-mail!',
+                },
+              ]}
             >
               <Input
                 className="email-input"
@@ -87,7 +96,7 @@ class SignIn extends Component {
         </div>
       </div>
     );
-  };
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
