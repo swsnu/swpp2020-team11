@@ -9,6 +9,18 @@ const stubUser = {
 };
 
 describe('ActionCreators', () => {
+  const spyLog = jest.spyOn(console, 'log')
+    .mockImplementation(() => {
+    });
+
+  const spyAlert = jest.spyOn(window, 'alert')
+    .mockImplementation(() => {
+    });
+
+  const spyHistory = jest.spyOn(history, 'push')
+    .mockImplementation(() => {
+    });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -22,13 +34,6 @@ describe('ActionCreators', () => {
           };
           resolve(result);
         });
-      });
-
-    const spyAlert = jest.spyOn(window, 'alert')
-      .mockImplementation(() => {
-      });
-    const spyHistory = jest.spyOn(history, 'push')
-      .mockImplementation(() => {
       });
     store.dispatch(actionCreators.signIn(
       { 'email': 'dummy', 'password': 'dummy' })).then(() => {
@@ -51,14 +56,6 @@ describe('ActionCreators', () => {
           };
           reject(result);
         });
-      });
-
-    const spyLog = jest.spyOn(console, 'log')
-      .mockImplementation(() => {
-      });
-
-    const spyHistory = jest.spyOn(history, 'push')
-      .mockImplementation(() => {
       });
 
     store.dispatch(actionCreators.signIn(
@@ -84,10 +81,6 @@ describe('ActionCreators', () => {
         });
       });
 
-    const spyHistory = jest.spyOn(history, 'push')
-      .mockImplementation(() => {
-      });
-
     store.dispatch(actionCreators.signIn(
       { 'email': 'dummy', 'password': 'dummy' })).then(() => {
       const newState = store.getState();
@@ -107,14 +100,6 @@ describe('ActionCreators', () => {
           };
           reject(result);
         });
-      });
-
-    const spyLog = jest.spyOn(console, 'log')
-      .mockImplementation(() => {
-      });
-
-    const spyHistory = jest.spyOn(history, 'push')
-      .mockImplementation(() => {
       });
 
     store.dispatch(actionCreators.signOut()).then(() => {
@@ -138,10 +123,6 @@ describe('ActionCreators', () => {
         });
       });
 
-    const spyHistory = jest.spyOn(history, 'push')
-      .mockImplementation(() => {
-      });
-
     store.dispatch(actionCreators.signOut()).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeFalsy();
@@ -163,9 +144,6 @@ describe('ActionCreators', () => {
         });
       });
 
-    const spyAlert = jest.spyOn(window, 'alert')
-      .mockImplementation(() => {
-      });
     store.dispatch(actionCreators.signUp(
       {
         'email': 'dummy', 'password': 'dummy',
@@ -191,15 +169,32 @@ describe('ActionCreators', () => {
         });
       });
 
-    const spyLog = jest.spyOn(console, 'log')
-      .mockImplementation(() => {
-      });
-
     store.dispatch(actionCreators.signUp(
       {
         'email': 'dummy', 'password': 'dummy',
         'nickname': 'dummy', 'phoneNumber': 'dummy',
       })).then(() => {
+      const newState = store.getState();
+      expect(newState.account.isLoggedIn).toBeFalsy();
+      expect(newState.account.user).toBeNull();
+      expect(spyAxios).toHaveBeenCalledTimes(1);
+      expect(spyLog).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+
+  it(`'CheckAccount' should log if response is not correctly`, (done) => {
+    const spyAxios = jest.spyOn(axios, 'get')
+      .mockImplementation((url) => {
+        return new Promise((resolve, reject) => {
+          const result = {
+            status: 400,
+          };
+          reject(result);
+        });
+      });
+
+    store.dispatch(actionCreators.checkAccount()).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeFalsy();
       expect(newState.account.user).toBeNull();
@@ -226,6 +221,26 @@ describe('ActionCreators', () => {
         'email': 'dummy', 'password': 'dummy',
         'nickname': 'dummy', 'phoneNumber': 'dummy',
       })).then(() => {
+      const newState = store.getState();
+      expect(newState.account.isLoggedIn).toBeTruthy();
+      expect(newState.account.user).toStrictEqual(stubUser);
+      expect(spyAxios).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+  it(`'CheckAccount' should call reducer if response is correctly`, (done) => {
+    const spyAxios = jest.spyOn(axios, 'get')
+      .mockImplementation((url) => {
+        return new Promise((resolve, reject) => {
+          const result = {
+            status: 200,
+            data: stubUser,
+          };
+          resolve(result);
+        });
+      });
+
+    store.dispatch(actionCreators.checkAccount()).then(() => {
       const newState = store.getState();
       expect(newState.account.isLoggedIn).toBeTruthy();
       expect(newState.account.user).toStrictEqual(stubUser);

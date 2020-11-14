@@ -1,7 +1,7 @@
 import json
 
 from unittest.mock import patch
-from django.test import TestCase, Client
+from django.test import TestCase
 
 from common.util.test_utils import APITestCase, NotAllowedTestCase
 from account.models import User, PersonalityTestQuestion, Personality, PersonalityType
@@ -28,6 +28,9 @@ class AccountNotAllowedTestCase(NotAllowedTestCase):
         {'url': 'logout/', 'method': 'post'},
         {'url': 'logout/', 'method': 'put'},
         {'url': 'logout/', 'method': 'delete'},
+        {'url': 'token/', 'method': 'post'},
+        {'url': 'token/', 'method': 'put'},
+        {'url': 'token/', 'method': 'delete'},
         {'url': 'personality_check/', 'method': 'put'},
         {'url': 'personality_check/', 'method': 'delete'},
     ]
@@ -41,11 +44,9 @@ class AccountNotAllowedTestCase(NotAllowedTestCase):
 
 class SignUpTest(APITestCase):
     url = '/api/user/'
+    user_for_login = None
 
-    def setUp(self):
-        self.client = Client(enforce_csrf_checks=True)
-        response = self.client.get(self.CSRF_CHECK_URL)
-        self.csrftoken = response.cookies['csrftoken'].value
+    def _setup_database(self):
         setup_database()
 
     def test_post_with_valid_request(self):
@@ -88,16 +89,14 @@ class SignUpTest(APITestCase):
 
 class SignInTest(APITestCase):
     url = '/api/user/login/'
+    user_for_login = None
 
-    def setUp(self):
-        self.client = Client(enforce_csrf_checks=True)
-        response = self.client.get(self.CSRF_CHECK_URL)
-        self.csrftoken = response.cookies['csrftoken'].value
-        self._setup_user_to_loggin()
+    def _setup_database(self):
+        setup_database()
 
     @patch('django.contrib.auth.login')
     def test_post_with_valid_request(self, auth_login_function):
-        response = self.client.post(self.url, {'email': 'valid@email.com', 'password': 'valid password'},
+        response = self.client.post(self.url, {'email': 'stub@email.com', 'password': 'stub password'},
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(auth_login_function.call_count, 1)
@@ -111,10 +110,23 @@ class SignInTest(APITestCase):
 
     @patch('django.contrib.auth.login')
     def test_post_with_invalid_password(self, auth_login_function):
-        response = self.client.post(self.url, {'email': 'valid@email.com', 'password': 'wrong password'},
+        response = self.client.post(self.url, {'email': 'stub@email.com', 'password': 'wrong password'},
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(auth_login_function.call_count, 0)
+
+
+class TokenTest(APITestCase):
+    url = '/api/user/token/'
+
+    def test_get_with_valid_request(self):
+        response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_with_not_logged_in_request(self):
+        self.client.logout()
+        response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 401)
 
 
 class SignOutTest(APITestCase):

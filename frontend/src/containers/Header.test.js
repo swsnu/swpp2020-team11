@@ -6,6 +6,7 @@ import Header from './Header';
 import { history } from '../store/store';
 import { getMockStore, stubInitialState, stubAccount } from '../test-utils/mocks';
 import { LoginOutlined, UserOutlined } from '@ant-design/icons';
+import * as actionCreators from '../store/actions/account';
 
 
 describe('<Header />', () => {
@@ -27,6 +28,11 @@ describe('<Header />', () => {
   });
 
   beforeEach(() => {
+    jest.spyOn(actionCreators, 'checkAccount')
+      .mockImplementation(() => {
+        return (dispatch) => {
+        };
+      });
     header = function mockHeader(initialState) {
       const mockStore = getMockStore(initialState);
       return (

@@ -5,7 +5,7 @@ from account.models import User
 
 class APITestCase(TestCase):
     csrftoken = None
-    CSRF_CHECK_URL = '/api/user/logout/'
+    CSRF_CHECK_URL = '/api/user/token/'
 
     user_for_login = {
         'email': 'valid@email.com',
@@ -20,10 +20,11 @@ class APITestCase(TestCase):
         self.csrftoken = response.cookies['csrftoken'].value
         self._setup_user_to_loggin()
         self._setup_database()
-        self.client.login(username=self.user_for_login['email'], password=self.user_for_login['password'])
 
     def _setup_user_to_loggin(self):
-        User.objects.create_user(**self.user_for_login)
+        if self.user_for_login:
+            User.objects.create_user(**self.user_for_login)
+            self.client.login(username=self.user_for_login['email'], password=self.user_for_login['password'])
 
     def _setup_database(self):
         pass
