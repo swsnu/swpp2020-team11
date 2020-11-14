@@ -1,12 +1,16 @@
+.p {
+  float: left;
+}
+
 .main-page {
-  margin-top: 120px;
+  margin-top: 20px;
 }
 
 .big-text {
   margin-top: 50px;
   margin-bottom: 0px;
   font-weight: 500;
-  font-size: 25px;
+  font-size: 25pt;
   display: block;
 }
 
@@ -14,11 +18,11 @@
   margin-top: 0;
   margin-bottom: 0px;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 15pt;
   display: block;
 }
 
 .input-prefix {
   font-weight: 600;
-  font-size: 18px;
+  font-size: 15pt;
 }

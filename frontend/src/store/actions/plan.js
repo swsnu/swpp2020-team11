@@ -48,6 +48,17 @@ export const getPlan = (level, headCount) => {
   };
 };
 
+export const makeReservation = () => {
+  return (dispatch) => {
+    return axios.post(`/api/plan/reservation/`)
+      .then((res) => {
+        dispatch({ type: actionTypes.GetReservation, value: res.data });
+        dispatch(push('/plan/reservation'));
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
 export const createReview = (review) => {
   return (dispatch) => {
     return axios.post('/api/plan/review/', review)
@@ -58,9 +69,10 @@ export const createReview = (review) => {
       .catch((err) => console.log(err));
   };
 };
+
 export const getReviewDetail = (id) => {
   return (dispatch) => {
-    return axios.get('/api/plan/review/'+id)
+    return axios.get('/api/plan/review/' + id)
       .then((res) => {
         console.log(res.data);
         dispatch({ type: actionTypes.GetReviewDetail, value: res.data.reviewDetail });
@@ -69,9 +81,10 @@ export const getReviewDetail = (id) => {
       .catch((err) => console.log(err));
   };
 };
+
 export const modifyReview = (review) => {
   return (dispatch) => {
-    return axios.put('/api/plan/review/'+review.id+'/', review)
+    return axios.put('/api/plan/review/' + review.id + '/', review)
       .then((res) => {
         dispatch({ type: actionTypes.ModifyReview, value: res.data });
       })

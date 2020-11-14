@@ -1,0 +1,38 @@
+.main-image-wrapper {
+  margin-top: 60px;
+}
+
+.hash-tag-wrapper {
+  margin-top: 30px;
+  margin-left: 14%;
+  position: absolute;
+  font-size: 12pt;
+  color: grey;
+  text-align: left;
+}
+
+.information-wrapper {
+  margin-top: 130px;
+  margin-left: 14%;
+  position: absolute;
+  font-size: 12pt;
+  color: grey;
+  text-align: left;
+}
+
+.tempting-phrase-wrapper {
+  margin-top: 60px;
+  font-family: Zapfino, serif;
+  font-size: 30pt;
+}
+
+.tempting-phrase {
+  font-family: Zapfino, serif;
+  font-size: 40pt;
+}
+
+.reservation-button {
+  margin-top: 40px;
+  width: 200px;
+  height: 40px;
+}

@@ -20,12 +20,20 @@ class PlanNotAllowedTestCase(NotAllowedTestCase):
     ]
 
 
-class SignOutTest(APITestCase):
+class PlanTest(APITestCase):
     url = '/api/plan/'
 
     def test_post_with_valid_request(self):
         response = self.client.post(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
+
+
+class RervationTest(APITestCase):
+    url = '/api/plan/reservation/'
+
+    def test_post_with_valid_request(self):
+        response = self.client.post(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 200)
 
 stub_user = {
     'email': 'stub@naver.com',
