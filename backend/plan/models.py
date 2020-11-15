@@ -1,3 +1,6 @@
+import datetime
+
+from django.utils import timezone
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from account.models import User, Personality
@@ -14,6 +17,15 @@ class Plan(models.Model):
     started_at = models.DateTimeField(null=True)
     ended_at = models.DateTimeField(null=True)
     feedback = models.FloatField(null=True)  # temporary
+
+    @classmethod
+    def get_today_plan(cls, user):
+        today_min = datetime.datetime.combine(datetime.datetime.today(), datetime.time.min)
+        today_min = timezone.make_aware(today_min)
+        today_max = datetime.datetime.combine(datetime.datetime.today(), datetime.time.max)
+        today_max = timezone.make_aware(today_max)
+        plan = cls.objects.filter(user=user, created_at__range=(today_min, today_max)).first()
+        return plan
 
 
 class Features(models.Model):
@@ -79,6 +91,15 @@ class Taxi(models.Model):
     car_number = models.CharField(max_length=15)
     phone_number = PhoneNumberField()
     reservable = models.BooleanField(default=False)  # temporary
+
+    @classmethod
+    def get_reservable_taxi(cls):
+        taxi = cls.objects.filter(reservable=True).first()
+        if taxi is None:
+            taxi = cls(company='개인 택시', car_number='23우 2372',
+                       phone_number='010-1111-1111', reservable=True)
+            taxi.save()
+        return taxi
 
 
 class TransportationReservation(models.Model):
