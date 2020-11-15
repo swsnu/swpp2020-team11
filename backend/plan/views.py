@@ -1,5 +1,4 @@
 import json
-import datetime
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
@@ -9,7 +8,7 @@ from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
 from account.models import User
-from .models import Plan, HalfDayOffReservation, Review, Place
+from .models import Plan, HalfDayOffReservation, Review, Place, Taxi, TransportationReservation
 
 
 # dummy plan function for test
@@ -17,6 +16,20 @@ from .models import Plan, HalfDayOffReservation, Review, Place
 @require_http_methods(['POST'])
 @login_required
 def suggested_plan(request):
+    plan = Plan.get_today_plan(request.user)
+    if plan is None:
+        req = json.loads(request.body.decode())
+        head_count = req.get('headCount', 1)
+        taxi = Taxi.get_reservable_taxi()
+        taxi_reservation = TransportationReservation(taxi=taxi, reservation_name=request.user.nickname,
+                                                     reservation_time=timezone.now(), status=2, tot_price=50000,
+                                                     head_count=head_count)
+        taxi_reservation.save()
+        plan = Plan(user=request.user, head_count=head_count, created_at=timezone.now(),
+                    started_at=timezone.now(), ended_at=timezone.now())
+        plan.save()
+        reservation = HalfDayOffReservation(plan=plan, transportation=taxi_reservation)
+        reservation.save()
     result = {
         'imageUrls': [
             'http://www.puzzlesarang.com/shop/data/goods/1569406172621m0.jpg',
@@ -125,15 +138,12 @@ def review_detail(request, ids):
 @login_required
 def plan_reservation(request):
     # it should be 꺼내오기 from database
-    plan = Plan.objects.get(user=request.user)
+    plan = Plan.get_today_plan(request.user)
     trans_reservation = plan.reservation.transportation
     taxi = trans_reservation.taxi
     taxi_image = 'https://thewiki.ewr1.vultrobjects.com/data/' \
                  'ec8f98eb8298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png'
-    kst = datetime.timezone(datetime.timedelta(hours=9))
-    now = datetime.datetime.now(tz=kst)  # Current time 22H 31M 17S -> now = 223117
     # we should create calculate algorithm
-    arrival_time = now + datetime.timedelta(hours=5)
     # we should decide how we can get current location of taxi
     current_location = {
         "lat": 37.5291281,
@@ -147,7 +157,7 @@ def plan_reservation(request):
     taxi_information = {
         "taxiImage": taxi_image,
         "taxiType": taxi.company, "phoneNumber": f'{taxi.phone_number}',
-        "carNumber": taxi.car_number, "arrivalTime": arrival_time,
+        "carNumber": taxi.car_number, "arrivalTime": plan.ended_at,
         "currentLocation": current_location, "arrivalLocation": arrival_location}
 
     return JsonResponse({"taxi": taxi_information})
