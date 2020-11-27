@@ -13,6 +13,6 @@ code {
 }
 
 @font-face {
-  font-family: 'Zapfino1';
-  src: local('Zapfino1', url(./assets/font/LinotypeZapfino-One.ttf) format('truetype'))
+  font-family: 'Zapfino';
+  src: local('Zapfino', url(./assets/font/LinotypeZapfino-One.ttf) format('truetype'))
 }

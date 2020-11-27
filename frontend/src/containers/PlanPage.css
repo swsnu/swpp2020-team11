@@ -22,12 +22,12 @@
 
 .tempting-phrase-wrapper {
   margin-top: 60px;
-  font-family: Zapfino1;
+  font-family: Zapfino, serif;
   font-size: 30pt;
 }
 
 .tempting-phrase {
-  font-family: Zapfino1, serif;
+  font-family: Zapfino, serif;
   font-size: 40pt;
 }
 
