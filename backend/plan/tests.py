@@ -4,9 +4,10 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 from common.util.test_utils import APITestCase, NotAllowedTestCase
-from account.models import User
+from account.models import User, PersonalityType, Personality
 from plan.models import Plan, HalfDayOffReservation, TransportationReservation, \
-    Taxi, PlaceReservation, Place, Review, Features
+    Taxi, PlaceReservation, Place, Review, Features, Preference
+from plan.service import place_recommend
 
 stub_taxi = {
     'phone_number': '010-5882-5467',
@@ -225,3 +226,42 @@ class TaxiModelTest(TestCase):
     def test_create_super_user_with_valid_case(self):
         taxi = Taxi.get_reservable_taxi()
         self.assertIsNotNone(taxi)
+
+
+class PlaceRecommendFunctionTest(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(**stub_user)
+        for name in ['조용한', '신나는', '매니악한']:
+            Features.objects.create(feature_name=name, status=0)
+        features = Features.objects.all()
+        for type in ['O', 'N']:
+            PersonalityType.objects.create(classification_type='test_check', personality_type=type)
+        personality_types = PersonalityType.objects.all()
+        for i, p in enumerate(personality_types):
+            Personality.objects.create(user=user, score=i, type=p)
+
+        for i, p in enumerate(personality_types):
+            for j, f in enumerate(features):
+                Preference.objects.create(personality=p, feature=f, weight=i + 0.1 * j)
+
+        for i, type in enumerate(['food', 'scenary', 'activity']):
+            for j in range(3):
+                place = Place.objects.create(latitude=36.4772964 + i, longitude=125.958394 + j, type=type,
+                                             name=f'{type}{j}', image_urls='', status=1, avg_score=-1)
+                for f in features:
+                    place.features.add(f)
+                place.save()
+
+    def test_valid_case(self):
+        user_id = User.objects.first().id
+        result = place_recommend(user_id, 37.47964, 126.9594, 1.2)
+        self.assertEqual(len(result.get('food', [])), 1)
+        self.assertEqual(len(result.get('scenary', [])), 3)
+        self.assertEqual(len(result.get('activity', [])), 1)
+
+    def test_no_valid_place(self):
+        user_id = User.objects.first().id
+        result = place_recommend(user_id, 1000, 10000, 1.2)
+        self.assertEqual(len(result.get('food', [])), 0)
+        self.assertEqual(len(result.get('scenary', [])), 0)
+        self.assertEqual(len(result.get('activity', [])), 0)
