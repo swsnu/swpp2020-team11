@@ -18,7 +18,6 @@ class PersonalityCheck extends Component {
   componentDidMount() {
     axios.get('api/user/personality_check/')
       .then((res) => {
-        this.shuffle(res.data.questions);
         this.setState({
           questions: res.data.questions,
           maxPage: Math.ceil(res.data.questions.length / 5),
@@ -58,18 +57,6 @@ class PersonalityCheck extends Component {
       popUpVisible: false,
     });
   };
-
-  shuffle(a) {
-    let i;
-    let j;
-    let swap;
-    for (i = a.length; i; i -= 1) {
-      j = Math.floor(Math.random() * i);
-      swap = a[i - 1];
-      a[i - 1] = a[j];
-      a[j] = swap;
-    }
-  }
 
   render() {
     const questions = this.state.questions

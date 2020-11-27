@@ -9,9 +9,6 @@ const { Text, Paragraph } = Typography;
 
 
 class PersonalityQuestion extends Component {
-  state={
-    value: null,
-  };
   onChange(event) {
     this.setState({ value: event.target.value });
     this.props.onSetAnswer(this.props.idx, event.target.value);
@@ -24,7 +21,7 @@ class PersonalityQuestion extends Component {
         <Paragraph className="question-text">{ this.props.question }</Paragraph>
         <Space justify="center" size={ 30 }>
           <Text className="side-text">매우 동의하지 않는다.</Text>
-          <Radio.Group value={this.state.value}
+          <Radio.Group value={this.props.answer[this.props.idx]}
             onChange={ (e) => this.onChange(e) }>
             <Space justify="center" size={ 50 }>
               <Radio.Button className="outer-most-answer-button" value={1}/>
