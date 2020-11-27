@@ -3,7 +3,7 @@ import datetime
 from django.utils import timezone
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-from account.models import User, Personality
+from account.models import User, PersonalityType
 
 
 class Plan(models.Model):
@@ -200,7 +200,7 @@ class Suggestion(models.Model):
 
 class Preference(models.Model):
     personality = models.ForeignKey(
-        Personality,
+        PersonalityType,
         on_delete=models.SET_NULL,
         related_name='preference_personality',
         null=True
