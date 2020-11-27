@@ -58,7 +58,9 @@ def history(request):
     plans = Plan.objects.order_by('started_at').filter(user_id=request.user.id)
     halfdayoff = HalfDayOffReservation.objects.filter(plan_id__in=[plan.id for plan in plans])
     places = []
+    print(plans)
     for index, half in enumerate(halfdayoff):
+        print(index,len(halfdayoff))
         place = []
         dayoff = half
         act = dayoff.activity.place

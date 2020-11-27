@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Space, Button, Modal } from 'antd';
+import { Space, Button, Modal, message } from 'antd';
 import PersonalityQuestion from '../components/PersonalityQuestion';
 import { history } from '../store/store';
 import axios from 'axios';
@@ -18,6 +18,7 @@ class PersonalityCheck extends Component {
   componentDidMount() {
     axios.get('api/user/personality_check/')
       .then((res) => {
+        this.shuffle(res.data.questions);
         this.setState({
           questions: res.data.questions,
           maxPage: Math.ceil(res.data.questions.length / 5),
@@ -34,9 +35,14 @@ class PersonalityCheck extends Component {
   };
 
   onClickSubmit() {
-    this.setState({
-      popUpVisible: true,
-    });
+    const ans = Object.keys(this.props.answer);
+    if (ans.length !== this.state.questions.length) {
+      message.warning('모든 문항에 답해주세요.');
+    } else {
+      this.setState({
+        popUpVisible: true,
+      });
+    }
   };
 
   onClickYes() {
@@ -53,6 +59,18 @@ class PersonalityCheck extends Component {
     });
   };
 
+  shuffle(a) {
+    let i;
+    let j;
+    let swap;
+    for (i = a.length; i; i -= 1) {
+      j = Math.floor(Math.random() * i);
+      swap = a[i - 1];
+      a[i - 1] = a[j];
+      a[j] = swap;
+    }
+  }
+
   render() {
     const questions = this.state.questions
       .slice(this.state.page * 5 - 5, this.state.page * 5)
@@ -63,7 +81,6 @@ class PersonalityCheck extends Component {
           </div>
         );
       });
-
     return (
       <div className="personality-check-page">
         { questions }
