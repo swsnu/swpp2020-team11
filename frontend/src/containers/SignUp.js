@@ -176,7 +176,7 @@ class SignUp extends Component {
         </div>
       </div>
     );
-  }
+  };
 }
 
 const mapStateToProps = (state) => {
