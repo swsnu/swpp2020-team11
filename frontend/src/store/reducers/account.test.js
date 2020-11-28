@@ -14,7 +14,7 @@ describe('account Reducer', () => {
   });
   it('should sign in', () => {
     const newState = reducer(undefined, {
-      type: actionTypes.SignIn,
+      type: actionTypes.SetAccount,
       value: stubUser,
     });
     expect(newState).toEqual({

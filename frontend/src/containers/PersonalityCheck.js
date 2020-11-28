@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Space, Button, Modal } from 'antd';
+import { Space, Button, Modal, message } from 'antd';
 import PersonalityQuestion from '../components/PersonalityQuestion';
 import { history } from '../store/store';
 import axios from 'axios';
@@ -34,9 +34,14 @@ class PersonalityCheck extends Component {
   };
 
   onClickSubmit() {
-    this.setState({
-      popUpVisible: true,
-    });
+    const ans = Object.keys(this.props.answer);
+    if (ans.length !== this.state.questions.length) {
+      message.warning('모든 문항에 답해주세요.');
+    } else {
+      this.setState({
+        popUpVisible: true,
+      });
+    }
   };
 
   onClickYes() {
@@ -63,7 +68,6 @@ class PersonalityCheck extends Component {
           </div>
         );
       });
-
     return (
       <div className="personality-check-page">
         { questions }

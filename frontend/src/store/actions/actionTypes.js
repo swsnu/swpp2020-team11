@@ -1,5 +1,5 @@
 export const SignUp = 'SignUp';
-export const SignIn = 'SignIn';
+export const SetAccount = 'SetAccount';
 export const SignOut = 'SignOut';
 export const SetPersonality = 'SetPersonality';
 export const MakePersonality = 'MakePersonality';

@@ -7,6 +7,7 @@ import SignIn from './containers/SignIn';
 import PersonalityCheck from './containers/PersonalityCheck';
 import SignUp from './containers/SignUp';
 import Header from './containers/Header';
+import PlanReservation from './containers/PlanReservation';
 import History from './containers/History';
 import ReviewCreate from './components/review/ReviewCreate';
 import ReviewEdit from './components/review/ReviewEdit';
@@ -19,6 +20,7 @@ function App(props) {
         <Header/>
         <Switch>
           <Route path='/' exact component={ Main }/>
+          <Route path='/plan/reservation/' exact component={ PlanReservation }/>
           <Route path='/plan' exact component={ PlanPage }/>
           <Route path='/sign_in/' exact component={ SignIn }/>
           <Route path='/personality_check/' exact component={ PersonalityCheck }/>

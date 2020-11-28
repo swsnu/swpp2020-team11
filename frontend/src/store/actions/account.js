@@ -13,7 +13,7 @@ export const signIn = (email, password) => {
     })
       .then((res) => {
         if (res.status === 201) {
-          dispatch({ type: actionTypes.SignIn, value: res.data });
+          dispatch({ type: actionTypes.SetAccount, value: res.data });
           dispatch(push('/'));
         } else {
           alert('Email or password is wrong');
@@ -59,6 +59,18 @@ export const signUp = (email, nickname, password, phoneNumber) => {
   };
 };
 
+
+export const checkAccount = () => {
+  return (dispatch) => {
+    return axios.get('/api/user/token/')
+      .then((res) => {
+        dispatch({ type: actionTypes.SetAccount, value: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
 
 export const setPersonality = (index, answer) => {
   return (dispatch) => {

@@ -19,9 +19,6 @@ class History extends Component {
   }
 
   render() {
-    if (!this.props.isLoggedIn) {
-      this.props.history.push('/sign_in');
-    }
     if (this.props.histories.length != 0) {
       let historyitem = this.props.histories.map((history) => {
         const placeId = history.place.map((place) => place.id);
@@ -57,7 +54,6 @@ const mapStateToProps = (state) => {
   return {
     histories: state.plan.history,
     reviews: state.plan.review,
-    isLoggedIn: state.account.isLoggedIn,
   };
 };
 

@@ -27,6 +27,22 @@ const mockComponent = (
   </Provider>
 );
 
+const answer = {};
+for (let i=0; i<12; i++) {
+  answer[i]=1;
+}
+const answerState = { account: { personalityAnswer: answer }, plan: {} };
+const mockStore2 = getMockStore(answerState);
+const mockComponent2 = (
+  <Provider store={ mockStore2 }>
+    <ConnectedRouter history={ history }>
+      <Switch>
+        <Route path='/' exact component={ PersonalityCheck }/>
+      </Switch>
+    </ConnectedRouter>
+  </Provider>
+);
+
 const stubQuestionResponse = {
   questions: [
     { id: 1, question: 'question1' },
@@ -84,7 +100,7 @@ describe('<PersonalityCheck /> componentDidMount', () => {
 describe('<PersonalityCheck /> render', () => {
   let component;
   let wrapper;
-
+  let component2;
   beforeEach(() => {
     jest.spyOn(axios, 'get')
       .mockImplementation((url) => {
@@ -97,6 +113,7 @@ describe('<PersonalityCheck /> render', () => {
         });
       });
     component = mount(mockComponent);
+    component2 = mount(mockComponent2);
     wrapper = component.find('PersonalityCheck').instance();
   });
 
@@ -112,7 +129,7 @@ describe('<PersonalityCheck /> render', () => {
     expect(wrapper.state.maxPage).toBe(3);
   });
 
-  it('should show button properly.', () => {
+  it('should show button properly but no popUp when click show button.', () => {
     component.update();
     expect(component.find('.next-button button')).toHaveLength(1);
     expect(component.find('.prev-button button')).toHaveLength(0);
@@ -122,7 +139,11 @@ describe('<PersonalityCheck /> render', () => {
     component.update();
     expect(component.find('.next-button button')).toHaveLength(0);
     expect(component.find('.prev-button button')).toHaveLength(1);
-    expect(component.find('.submit-button button')).toHaveLength(1);
+    const submitButton = component.find('.submit-button button');
+    expect(submitButton).toHaveLength(1);
+    submitButton.simulate('click');
+    component.update();
+    expect(wrapper.state.popUpVisible).toBeFalsy();
   });
 
   it('should change page if user click next or prev button.', () => {
@@ -138,10 +159,10 @@ describe('<PersonalityCheck /> render', () => {
   });
 
   it('should show modal if user click submit button.', () => {
-    const wrapper = component.find('PersonalityCheck').instance();
+    const wrapper = component2.find('PersonalityCheck').instance();
     wrapper.setState({ page: 3 });
     component.update();
-    const submitButton = component.find('.submit-button button');
+    const submitButton = component2.find('.submit-button button');
     submitButton.simulate('click');
     component.update();
     expect(wrapper.state.popUpVisible).toBeTruthy();

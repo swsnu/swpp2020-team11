@@ -3,6 +3,7 @@ export {
   signOut,
   signUp,
   setPersonality,
+  checkAccount,
 } from './account';
 
 export {
