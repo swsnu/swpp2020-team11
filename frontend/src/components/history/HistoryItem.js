@@ -49,7 +49,6 @@ class HistoryItem extends React.Component {
       historyReview = <Button className='reviewButton' type='primary'
         onClick={() => this.onClickCreateHandler(this.props.plan)}>review</Button>;
     }
-
     return (
       <div className = "history_item">
         <Space align="center" direction='horizontal' size='middle'>

@@ -1,4 +1,5 @@
 import json
+import random
 from collections import defaultdict
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -74,9 +75,10 @@ def sign_up(request):
 @login_required
 def personality_check(request):
     if request.method == 'GET':
-        questions = PersonalityTestQuestion.objects.all()
+        question_list = list(PersonalityTestQuestion.objects.values('id', 'question').all())
+        random.shuffle(question_list)
         return JsonResponse({
-            'questions': [question.as_dict() for question in questions],
+            'questions': question_list,
         })
     req = json.loads(request.body.decode())
     req = {int(k): int(v) for k, v in req.items()}

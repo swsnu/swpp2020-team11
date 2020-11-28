@@ -15,3 +15,5 @@ class UserAdmin(admin.ModelAdmin):
         'nickname',
         'email',
     )
+admin.site.register(models.PersonalityTestQuestion)
+admin.site.register(models.PersonalityType)
