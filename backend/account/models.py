@@ -78,9 +78,6 @@ class PersonalityTestQuestion(models.Model):
     )
     weight = models.FloatField(null=True)
 
-    def as_dict(self):
-        return {'id': self.id, 'question': self.question}
-
 
 class Personality(models.Model):
     user = models.ForeignKey(
