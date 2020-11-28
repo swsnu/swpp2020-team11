@@ -29,11 +29,22 @@ yarn test --coverage --watchAll=false
 ```
 
 # Backend
-### run
+### dev run
+at root repository, type the following commands
+```
+cd backend
+python3 manage.py migrate
+python3 manage.py runserver
+```
+
+### prod run
 at root repository, type the following commands
 
 ```
 cd backend
+export AWS_SECRET_KEY=<secret_key>
+export AWS_SECRET_ACCESS_KEY=<secret_access_key>
+export SETTINGS=prod
 python3 manage.py migrate
 python3 manage.py runserver
 ```
