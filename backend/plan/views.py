@@ -32,7 +32,7 @@ def suggested_plan(request):
         reservation.save()
     result = {
         'imageUrls': [
-            'http://www.puzzlesarang.com/shop/data/goods/1569406172621m0.jpg',
+            'https://www.puzzlesarang.com/shop/data/goods/1569406172621m0.jpg',
             'https://img.huffingtonpost.com/asset/5bf24ac824000060045835ff.jpeg?ops=scalefit_720_noupscale&format=webp',
             'https://pbs.twimg.com/media/Dxai_-gUYAEktpi?format=jpg&name=medium',
         ],
