@@ -179,25 +179,6 @@ class Instagram(models.Model):
     status = models.IntegerField()  # temporary
 
 
-class Suggestion(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='suggestion_user'
-    )
-    place = models.ForeignKey(
-        Place,
-        on_delete=models.CASCADE,  # temporary
-        related_name='suggestion_place'
-    )
-    hashtag = models.ManyToManyField(
-        HashTag,
-        related_name='suggestion_hashtag'
-    )
-    content = models.CharField(max_length=32)
-    status = models.IntegerField()  # temporary
-
-
 class Preference(models.Model):
     personality = models.ForeignKey(
         PersonalityType,

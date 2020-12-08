@@ -28,6 +28,7 @@ SECRET_KEY = 'm15^f2kvoi=!vdy_)q$a%$^h&m#w92rk&960=h)74p-w#b*0-t'
 INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'plan.apps.PlanConfig',
+    'suggest.apps.SuggestConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -106,3 +107,20 @@ AUTH_USER_MODEL = 'account.User'
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         }
+#     },
+#     'loggers': {
+#         'django.db.backends': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     }
+# }
