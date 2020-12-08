@@ -1,9 +1,14 @@
 # SECURITY WARNING: don't run with debug turned on in production!
+import os
 from pathlib import Path
+import dotenv
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+dotenv.read_dotenv(dotenv=ROOT_DIR + "/.env")
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -17,4 +22,30 @@ DATABASES = {
     }
 }
 
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'Access-Control-Allow-Origin',
+    'x-requested-with',
+]
+
+S3_IMAGE_STORAGE = "asapgo-development"

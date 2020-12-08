@@ -20,4 +20,8 @@ export {
 export {
   getSuggest,
   getSuggestDetail,
+  changeSuggestionDetail,
+  createSuggestionDetail,
+  clearSuggestionDetail,
+  putSuggestionDetail,
 } from './suggest';
