@@ -16,6 +16,10 @@ export const stubInitialState = {
     review: [],
     reviewDetail: [],
   },
+  suggest: {
+    suggest: [],
+    suggestDetail: {},
+  },
 };
 
 export const stubAccount = {
@@ -68,8 +72,40 @@ export const stubReservation = {
     '298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png',
 };
 
+export const stubSuggestDetail = {
+  'id': 1,
+  'place': { 'name': 'good', 'lat': 30, 'lng': 127, 'score': 0 },
+  'updated_at': '2020-12-08T13:27:52.396Z',
+  'status': 1,
+  'hashTags': ['test'],
+};
 
-const getMockAccountReducer = (initialState) => jest.fn(
+export const stubSuggest = [
+  stubSuggestDetail,
+  {
+    'id': 2,
+    'place': { 'name': 'good', 'lat': 30, 'lng': 127, 'score': 0 },
+    'updated_at': '2020-12-08T13:27:52.396Z',
+    'status': 2,
+    'hashTags': ['test'],
+  },
+  {
+    'id': 3,
+    'place': { 'name': 'good', 'lat': 30, 'lng': 127, 'score': 0 },
+    'updated_at': '2020-12-08T13:27:52.396Z',
+    'status': 3,
+    'hashTags': ['test'],
+  },
+  {
+    'id': 4,
+    'place': { 'name': 'good', 'lat': 30, 'lng': 127, 'score': 0 },
+    'updated_at': '2020-12-08T13:27:52.396Z',
+    'status': 3,
+    'hashTags': ['test'],
+  },
+];
+
+const getMockReducer = (initialState) => jest.fn(
   (initialState) => (state = initialState, action) => {
     switch (action.type) {
       default:
@@ -78,24 +114,12 @@ const getMockAccountReducer = (initialState) => jest.fn(
     return state;
   },
 )(initialState);
-
-const getMockPlanReducer = (initialState) => jest.fn(
-  (initialState) => (state = initialState, action) => {
-    switch (action.type) {
-      default:
-        break;
-    }
-    return state;
-  },
-)(initialState);
-
 
 export const getMockStore = (initialState) => {
-  const mockAccountReducer = getMockAccountReducer(initialState.account);
-  const mockPlanReducer = getMockPlanReducer(initialState.plan);
   const rootReducer = combineReducers({
-    account: mockAccountReducer,
-    plan: mockPlanReducer,
+    account: initialState.account ? getMockReducer(initialState.account) : {},
+    plan: initialState.plan ? getMockReducer(initialState.plan) : {},
+    suggest: initialState.suggest ? getMockReducer(initialState.suggest) : {},
     router: connectRouter(history),
   });
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

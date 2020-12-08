@@ -74,7 +74,6 @@ export const getReviewDetail = (id) => {
   return (dispatch) => {
     return axios.get('/api/plan/review/' + id)
       .then((res) => {
-        console.log(res.data);
         dispatch({ type: actionTypes.GetReviewDetail, value: res.data.reviewDetail });
         return res.data.reviewDetail;
       })

@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
   suggest: [],
-  suggestDetail: [],
+  suggestDetail: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -11,7 +11,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, suggest: action.value };
 
     case actionTypes.GetSuggestionDetail:
-      return { ...state, reviewDetail: action.value };
+      return { ...state, suggestDetail: action.value };
 
     default:
       break;

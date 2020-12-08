@@ -10,6 +10,7 @@ import './Suggestion.css';
 class Suggestion extends Component {
   state = {
     page: 1,
+    pageSize: 3,
   }
 
   componentDidMount() {
@@ -21,14 +22,16 @@ class Suggestion extends Component {
   }
 
   render() {
-    const suggests = this.props.suggest.map((suggest) => {
-      return (
-        <div key={ suggest.id }>
-          <SuggestItem suggest={ suggest }/>
-          <br/>
-        </div>
-      );
-    });
+    const suggests = this.props.suggest
+      .slice(3 * (this.state.page - 1), 3 * this.state.page)
+      .map((suggest) => {
+        return (
+          <div key={ suggest.id }>
+            <SuggestItem suggest={ suggest }/>
+            <br/>
+          </div>
+        );
+      });
 
     return (
       <>
@@ -36,7 +39,7 @@ class Suggestion extends Component {
         <div className="suggestList">
           <Button
             className="newSuggestButton"
-            onClick={() => this.props.history.push('/suggest/create')}
+            onClick={ () => this.props.history.push('/suggest/create') }
           >
             New Suggestion
           </Button>
@@ -46,7 +49,7 @@ class Suggestion extends Component {
               { suggests }
               <Pagination
                 total={ this.props.suggest.length }
-                defaultPageSize={ 3 }
+                defaultPageSize={ this.state.pageSize }
                 onChange={ (pageNumber) => this.onPageHandler(pageNumber) }
               />
             </div>
