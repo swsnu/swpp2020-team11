@@ -58,6 +58,25 @@ const stubQuestionResponse = {
     { id: 11, question: 'question11' },
     { id: 12, question: 'question12' },
   ],
+  answer: false,
+};
+
+const stubQuestionAlreadyResponse = {
+  questions: [
+    { id: 1, question: 'question1' },
+    { id: 2, question: 'question2' },
+    { id: 3, question: 'question3' },
+    { id: 4, question: 'question4' },
+    { id: 5, question: 'question5' },
+    { id: 6, question: 'question6' },
+    { id: 7, question: 'question7' },
+    { id: 8, question: 'question8' },
+    { id: 9, question: 'question9' },
+    { id: 10, question: 'question10' },
+    { id: 11, question: 'question11' },
+    { id: 12, question: 'question12' },
+  ],
+  answer: true,
 };
 
 
@@ -166,6 +185,41 @@ describe('<PersonalityCheck /> render', () => {
     submitButton.simulate('click');
     component.update();
     expect(wrapper.state.popUpVisible).toBeTruthy();
+  });
+});
+
+describe('<PersonalityCheck /> already answer', () => {
+  let component;
+  let spyHistoryPush;
+  beforeEach(() => {
+    jest.spyOn(console, 'log')
+      .mockImplementation((url) => {
+      });
+    jest.spyOn(axios, 'get')
+      .mockImplementation((url) => {
+        return new Promise((resolve, reject) => {
+          const result = {
+            status: 200,
+            data: stubQuestionAlreadyResponse,
+          };
+          resolve(result);
+        });
+      });
+    spyHistoryPush = jest.spyOn(history, 'push')
+      .mockImplementation((path) => {
+      });
+    component = mount(mockComponent);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('show warning and back to main page', () => {
+    component.update();
+    const closeButton = component.find('.ant-alert-close-icon');
+    closeButton.simulate('click');
+    expect(spyHistoryPush).toHaveBeenCalledTimes(1);
   });
 });
 

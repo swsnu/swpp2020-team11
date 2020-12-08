@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Space, Button, Modal, message } from 'antd';
+import { Space, Button, Modal, Alert } from 'antd';
 import PersonalityQuestion from '../components/PersonalityQuestion';
 import { history } from '../store/store';
 import axios from 'axios';
@@ -20,6 +20,7 @@ class PersonalityCheck extends Component {
       .then((res) => {
         this.setState({
           questions: res.data.questions,
+          answer: res.data.answer,
           maxPage: Math.ceil(res.data.questions.length / 5),
         });
       })
@@ -36,7 +37,7 @@ class PersonalityCheck extends Component {
   onClickSubmit() {
     const ans = Object.keys(this.props.answer);
     if (ans.length !== this.state.questions.length) {
-      message.warning('모든 문항에 답해주세요.');
+      Modal.warning({ title: '모든 문항에 답해주세요.' });
     } else {
       this.setState({
         popUpVisible: true,
@@ -58,6 +59,9 @@ class PersonalityCheck extends Component {
     });
   };
 
+  onClose() {
+    this.props.history.push('/');
+  }
   render() {
     const questions = this.state.questions
       .slice(this.state.page * 5 - 5, this.state.page * 5)
@@ -68,6 +72,19 @@ class PersonalityCheck extends Component {
           </div>
         );
       });
+    if (this.state.answer) {
+      return (
+        <div>
+          <Alert
+            message="이미 답변을 하였습니다."
+            description="답변을 수정하지 못합니다."
+            type="error"
+            closable
+            onClose={()=>this.onClose()}
+          />
+        </div>
+      );
+    }
     return (
       <div className="personality-check-page">
         { questions }
