@@ -4,7 +4,7 @@ import { push } from 'connected-react-router';
 
 export const getHistory = () => {
   return (dispatch) => {
-    return axios.get('/api/plan/history')
+    return axios.get('/api/plan/history/')
       .then((res) => {
         dispatch({ type: actionTypes.GetHistory, value: res.data.history });
         return res.data.history;
@@ -13,21 +13,9 @@ export const getHistory = () => {
   };
 };
 
-export const getSuggests = () => {
-  return (dispatch) => {
-    return axios.get('/api/plan/suggest')
-      .then((res) => {
-        dispatch({ type: actionTypes.GetSuggestion, value: res.data.suggests });
-        return res.data.history;
-      })
-      .catch((err) => console.log(err));
-  };
-};
-
-
 export const getReview = () => {
   return (dispatch) => {
-    return axios.get('/api/plan/review')
+    return axios.get('/api/plan/review/')
       .then((res) => {
         dispatch({ type: actionTypes.GetReview, value: res.data.review });
       })
@@ -37,7 +25,7 @@ export const getReview = () => {
 
 export const getReservation = (user) => {
   return (dispatch) => {
-    return axios.get('/api/reservation')
+    return axios.get('/api/reservation/')
       .then((res) => {
         dispatch({ type: actionTypes.GetReservation, value: res.data });
         dispatch(push('/plan/reservation'));

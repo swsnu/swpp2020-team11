@@ -15,5 +15,9 @@ export {
   createReview,
   getReviewDetail,
   modifyReview,
-  getSuggests,
 } from './plan';
+
+export {
+  getSuggest,
+  getSuggestDetail,
+} from './suggest';

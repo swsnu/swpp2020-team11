@@ -11,7 +11,7 @@ import PlanReservation from './containers/PlanReservation';
 import History from './containers/History';
 import ReviewCreate from './components/review/ReviewCreate';
 import ReviewEdit from './components/review/ReviewEdit';
-import Suggest from './containers/Suggest';
+import Suggest from './containers/Suggestion';
 import './App.css';
 
 function App(props) {

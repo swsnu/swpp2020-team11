@@ -5,7 +5,6 @@ const initialState = {
   reservation: null,
   history: [],
   review: [],
-  suggests: [],
   reviewDetail: [],
 };
 
@@ -19,9 +18,6 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.GetHistory:
       return { ...state, history: action.value };
-
-    case actionTypes.GetSuggestion:
-      return { ...state, suggests: action.value };
 
     case actionTypes.GetReview:
       return { ...state, review: action.value };
