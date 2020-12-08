@@ -1,11 +1,7 @@
-import json
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
-from django.utils import timezone
 
 from common.util.auth_util import login_required
-from common.util.http_util import HttpStatusCode
 
 from suggest.models import Suggestion
 
@@ -39,4 +35,4 @@ def suggest_list(request):
 @require_http_methods(['GET'])
 @login_required
 def suggest(request, suggest_id):
-    return JsonResponse({'suggest': {}}, safe=False)
+    return JsonResponse({'suggest': suggest_id}, safe=False)
