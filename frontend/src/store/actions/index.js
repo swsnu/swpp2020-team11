@@ -15,4 +15,5 @@ export {
   createReview,
   getReviewDetail,
   modifyReview,
+  getSuggests,
 } from './plan';

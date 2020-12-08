@@ -13,6 +13,18 @@ export const getHistory = () => {
   };
 };
 
+export const getSuggests = () => {
+  return (dispatch) => {
+    return axios.get('/api/plan/suggest')
+      .then((res) => {
+        dispatch({ type: actionTypes.GetSuggestion, value: res.data.suggests });
+        return res.data.history;
+      })
+      .catch((err) => console.log(err));
+  };
+};
+
+
 export const getReview = () => {
   return (dispatch) => {
     return axios.get('/api/plan/review')

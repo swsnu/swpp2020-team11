@@ -11,6 +11,7 @@ import PlanReservation from './containers/PlanReservation';
 import History from './containers/History';
 import ReviewCreate from './components/review/ReviewCreate';
 import ReviewEdit from './components/review/ReviewEdit';
+import Suggest from './containers/Suggest';
 import './App.css';
 
 function App(props) {
@@ -20,14 +21,15 @@ function App(props) {
         <Header/>
         <Switch>
           <Route path='/' exact component={ Main }/>
-          <Route path='/plan/reservation/' exact component={ PlanReservation }/>
+          <Route path='/plan/reservation' exact component={ PlanReservation }/>
           <Route path='/plan' exact component={ PlanPage }/>
           <Route path='/sign_in/' exact component={ SignIn }/>
-          <Route path='/personality_check/' exact component={ PersonalityCheck }/>
+          <Route path='/personality_check' exact component={ PersonalityCheck }/>
           <Route path='/sign_up/' exact component={ SignUp }/>
           <Route path='/plan/history' exact component={ History }/>
           <Route path='/review/:id/edit' exact component={ ReviewEdit }/>
           <Route path='/review/:id/create' exact component={ ReviewCreate }/>
+          <Route path='/suggest' exact component={ Suggest }/>
         </Switch>
       </div>
     </ConnectedRouter>

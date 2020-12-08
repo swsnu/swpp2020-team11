@@ -5,6 +5,7 @@ const initialState = {
   reservation: null,
   history: [],
   review: [],
+  suggests: [],
   reviewDetail: [],
 };
 
@@ -19,6 +20,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.GetHistory:
       return { ...state, history: action.value };
 
+    case actionTypes.GetSuggestion:
+      return { ...state, suggests: action.value };
+
     case actionTypes.GetReview:
       return { ...state, review: action.value };
 
@@ -31,7 +35,7 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.ModifyReview:
       const modifyReview = state.reviewDetail.map((review) => {
-        if (review.id == action.value.id) {
+        if (review.id === action.value.id) {
           return { ...review, score: action.value.score, content: action.value.content };
         } else {
           return { ...review };
