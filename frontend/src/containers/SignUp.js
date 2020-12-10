@@ -165,7 +165,7 @@ class SignUp extends Component {
                 className="yes-button"
                 key="personality-check"
                 type="primary"
-                onClick={ () => this.props.history.push('/') }
+                onClick={ () => this.props.history.push('/personality_check/') }
               >
                 Yes
               </Button>,
