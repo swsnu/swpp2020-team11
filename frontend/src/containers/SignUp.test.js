@@ -116,7 +116,7 @@ describe('<SignUp />', () => {
     const component = mount(signUp(popUpState));
     const button = component.find('.yes-button button');
     button.simulate('click');
-    expect(spyHistory).toBeCalledWith('/personality_check');
+    expect(spyHistory).toBeCalledWith('/personality_check/');
   });
   it('should redirect to main page if user click cancel button.', () => {
     const component = mount(signUp(popUpState));
