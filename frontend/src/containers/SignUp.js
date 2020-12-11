@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { Form, Input, Tooltip, Button, Modal } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import './SignUp.css';
 
 class SignUp extends Component {
   state = {
@@ -60,7 +61,8 @@ class SignUp extends Component {
 
     return (
       <div className="SignUpPage">
-        <h1>SignUp</h1>
+        <div id = "topBar2"></div>
+        <h1 id = "title">SignUp</h1>
         <div className="SignUp">
           <Form
             {...formItemLayout}
@@ -68,6 +70,7 @@ class SignUp extends Component {
             className="register-form"
             scrollToFirstError
           >
+            <div id = "midBox"></div>
             <Form.Item
               name="email"
               label="E-mail"
