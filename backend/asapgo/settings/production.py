@@ -17,38 +17,9 @@ DATABASES = {
         'PORT': get_secret('asapgo-database').get('PORT'),
     }
 }
-CORS_ALLOWED_ORIGINS = ["http://trip.asapgo.net.s3-website.ap-northeast-2.amazonaws.com",
-                        "https://www.asapgo.net",
-                        "https://localhost:3000",
-                        "http://localhost:3000"]
 
-CORS_ORIGIN_WHITELIST = ["http://trip.asapgo.net.s3-website.ap-northeast-2.amazonaws.com",
-                         "https://www.asapgo.net",
-                         "https://localhost:3000",
-                         "http://localhost:3000"]
+CORS_ORIGIN_WHITELIST = ["https://trip.asapgo.net"]
 
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'Access-Control-Allow-Origin',
-    'x-requested-with',
-]
+CSRF_TRUSTED_ORIGINS = ["trip.asapgo.net"]
 
 S3_IMAGE_STORAGE = "asapgo-development"

@@ -8,8 +8,8 @@ import DaumPostcode from 'react-daum-postcode';
 import Geocode from 'react-geocode';
 import './SuggestionCreate.css';
 import axios from 'axios';
-import { endsWithAny } from '../utils';
 import * as actionCreators from '../store/actions';
+import { endsWithAny } from '../utils/strUtils';
 
 Geocode.setApiKey(process.env.REACT_APP_API_KEY);
 
@@ -174,6 +174,7 @@ class SuggestionCreate extends React.Component {
               { fileList.length === 0 ? uploadButton : null }
             </Upload>
             <Modal
+              className="preview-image-modal"
               visible={ previewVisible }
               title={ previewTitle }
               footer={ null }
@@ -202,7 +203,13 @@ class SuggestionCreate extends React.Component {
                     placeholder="도로명 주소"
                     value={ this.props.suggestDetail.roadAddress }
                   />
-                  <Button type="primary" onClick={ () => this.showModal() }>우편번호 찾기</Button>
+                  <Button
+                    className="road-address-button"
+                    type="primary"
+                    onClick={ () => this.showModal() }
+                  >
+                    우편번호 찾기
+                  </Button>
                 </Space>
               </Form.Item>
               <Form.Item
@@ -271,6 +278,7 @@ class SuggestionCreate extends React.Component {
           </Col>
         </Row>
         <Modal
+          className='road-address-modal'
           visible={ this.state.isModalVisible }
           onCancel={ () => this.handleCancelAddress() }
           footer={ <></> }
@@ -292,7 +300,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClearSuggest: () => dispatch(actionCreators.clearSuggestionDetail()),
     onChangeSuggest: (key, value) => dispatch(actionCreators.changeSuggestionDetail(key, value)),
     onCreateSuggest: (data) => dispatch(actionCreators.createSuggestionDetail(data)),
     onPutSuggest: (data) => dispatch(actionCreators.putSuggestionDetail(data)),

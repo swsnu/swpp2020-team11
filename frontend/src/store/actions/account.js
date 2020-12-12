@@ -2,19 +2,12 @@ import * as actionTypes from './actionTypes';
 import axios from 'axios';
 import { push } from 'connected-react-router';
 
-axios.defaults.baseURL = 'http://asapgo-backend.eba-qae3isys.ap-northeast-2.elasticbeanstalk.com';
-// axios.defaults.baseURL = 'https://localhost:8000';
-
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-axios.defaults.withCredentials = true;
-
 export const signIn = (email, password) => {
   return (dispatch) => {
     return axios.post('/api/user/login/', {
       email: email,
       password: password,
-    }, { withCredentials: true })
+    })
       .then((res) => {
         if (res.status === 201) {
           dispatch({ type: actionTypes.SetAccount, value: res.data });
@@ -68,7 +61,6 @@ export const checkAccount = () => {
   return (dispatch) => {
     return axios.get('/api/user/token/')
       .then((res) => {
-        console.log(res);
         dispatch({ type: actionTypes.SetAccount, value: res.data });
       })
       .catch((err) => {

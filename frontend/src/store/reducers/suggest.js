@@ -27,18 +27,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.ClearSuggestionDetail:
       return {
         ...state,
-        suggestDetail: {
-          hashedImageKey: '',
-          name: '',
-          explanation: '',
-          tags: '',
-          extraAddress: '',
-          roadAddress: '',
-          location: {
-            lng: 0,
-            lat: 0,
-          },
-        },
+        suggestDetail: initialState.suggestDetail,
       };
 
     case actionTypes.ModifySuggestionDetail:

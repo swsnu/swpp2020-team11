@@ -31,7 +31,7 @@ function App(props) {
           <Route path='/review/:id/edit' exact component={ ReviewEdit }/>
           <Route path='/review/:id/create' exact component={ ReviewCreate }/>
           <Route path='/suggest' exact component={ Suggestion }/>
-          <Route path='/suggest/create' exact render={ (props) => <SuggestionCreate { ...props } clear/> }/>
+          <Route path='/suggest/create' exact component={ SuggestionCreate }/>
           <Route path='/suggest/:id/edit' exact component={ SuggestionCreate }/>
         </Switch>
       </div>

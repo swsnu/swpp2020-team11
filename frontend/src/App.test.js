@@ -10,5 +10,3 @@ describe('<App />', () => {
     expect(wrapper.find('.App')).toHaveLength(1);
   });
 });
-test('renders learn react link', () => {
-});

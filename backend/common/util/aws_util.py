@@ -3,7 +3,6 @@ import os
 
 import boto3
 from botocore.exceptions import ClientError
-from asapgo.settings.base import S3_IMAGE_STORAGE
 
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -25,8 +24,8 @@ def create_presigned_post(bucket_name, object_name,
                                                      Fields=fields,
                                                      Conditions=conditions,
                                                      ExpiresIn=expiration)
-    except ClientError as e:
-        logging.error(e)
+    except ClientError as err:
+        logging.error(err)
         return None
 
     # The response contains the presigned URL and required fields

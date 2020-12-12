@@ -63,13 +63,13 @@ def history(request):
         dayoff = half
         act = dayoff.activity.place
         place.append({"id": act.id, "lat": act.latitude, "lng": act.longitude, "name": act.name,
-                      "img_urls": act.image_urls, "tag": [feature.feature_name for feature in act.features.all()]})
+                      "img_urls": act.image_key, "tag": [feature.feature_name for feature in act.features.all()]})
         din = dayoff.dinner.place
         place.append({"id": din.id, "lat": din.latitude, "lng": din.longitude, "name": din.name,
-                      "img_urls": din.image_urls, "tag": [feature.feature_name for feature in din.features.all()]})
+                      "img_urls": din.image_key, "tag": [feature.feature_name for feature in din.features.all()]})
         sce = dayoff.scenary.place
         place.append({"id": sce.id, "lat": sce.latitude, "lng": sce.longitude, "name": sce.name,
-                      "img_urls": sce.image_urls, "tag": [feature.feature_name for feature in sce.features.all()]})
+                      "img_urls": sce.image_key, "tag": [feature.feature_name for feature in sce.features.all()]})
         date = plans[index].started_at + timezone.timedelta(hours=9)
         places.append({"id": half.plan_id, "place": place, "date": date.strftime("%Y-%m-%d")})
     return JsonResponse({"history": places})
@@ -107,17 +107,17 @@ def review_detail(request, ids):
         user_id = request.user.id
         activity_place = plans.activity.place
         activity_review = Review.objects.get(user_id=user_id, place_id=activity_place.id).asdict()
-        activity_review['url'] = activity_place.image_urls
+        activity_review['url'] = activity_place.image_key
         activity_review['name'] = activity_place.name
         activity_review['tag'] = [feature.feature_name for feature in activity_place.features.all()]
         dinner_place = plans.dinner.place
         dinner_review = Review.objects.get(user_id=user_id, place_id=dinner_place.id).asdict()
-        dinner_review['url'] = dinner_place.image_urls
+        dinner_review['url'] = dinner_place.image_key
         dinner_review['name'] = dinner_place.name
         dinner_review['tag'] = [feature.feature_name for feature in dinner_place.features.all()]
         scenary_place = plans.scenary.place
         scenary_review = Review.objects.get(user_id=user_id, place_id=scenary_place.id).asdict()
-        scenary_review['url'] = scenary_place.image_urls
+        scenary_review['url'] = scenary_place.image_key
         scenary_review['name'] = scenary_place.name
         scenary_review['tag'] = [feature.feature_name for feature in scenary_place.features.all()]
         detail = [activity_review, dinner_review, scenary_review]

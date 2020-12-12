@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import SuggestItem from './SuggestItem';
 import { history } from '../../store/store';
-import { getMockStore, stubInitialState, stubSuggestDetail } from '../../test-utils/mocks';
+import { getMockStore, stubInitialState, stubSuggestListItem } from '../../test-utils/mocks';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import axios from 'axios';
@@ -37,19 +37,19 @@ describe('<SuggestItem/>', () => {
   });
 
   it('render without render', () => {
-    const stubApprovedSuggest = { ...stubSuggestDetail, status: 3 };
+    const stubApprovedSuggest = { ...stubSuggestListItem, status: 3 };
     const component = mount(suggestItem(stubApprovedSuggest));
     expect(component.find('.suggestItem')).toHaveLength(1);
   });
 
   it('click Modify', () => {
-    const component = mount(suggestItem(stubSuggestDetail));
+    const component = mount(suggestItem(stubSuggestListItem));
     const spyGet = jest.spyOn(axios, 'get')
       .mockImplementation((url) => {
         return new Promise((resolve, reject) => {
           const result = {
             status: 200,
-            data: stubSuggestDetail,
+            data: stubSuggestListItem,
           };
           resolve(result);
         });
