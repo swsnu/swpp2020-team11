@@ -33,3 +33,4 @@ matrix:
     after_success:
     - cd backend
     - coveralls --merge=../frontend/coverage/coverage.json
+     
