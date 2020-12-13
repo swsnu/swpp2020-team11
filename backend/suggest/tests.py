@@ -2,7 +2,6 @@ import datetime
 from unittest.mock import patch
 
 from django.utils import timezone
-
 from common.util.test_utils import APITestCase, NotAllowedTestCase
 from suggest.models import Suggestion
 from account.models import User
@@ -78,7 +77,6 @@ class SuggestTest(APITestCase):
         }, content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
 
-
 class SuggestDetailTest(APITestCase):
     url = '/api/suggest/1/'
 
@@ -127,3 +125,4 @@ class ImageUploadPresignedUrl(APITestCase):
                                     HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(create_presigned_post.call_count, 1)
         self.assertEqual(response.status_code, 400)
+        
