@@ -1,0 +1,50 @@
+* {
+  font-family: Zapfino, serif;
+  font-weight : bold;
+}
+
+#topBox {
+  position : absolute;
+  background : #ba6b6c;
+  left : 50%;
+  width : 500px;
+  height : 25px;
+  top : 100px;
+  margin-left: -250px;
+}
+
+#topBar {
+  font-family : sans-serif;
+  font-size : 20px;
+  text-align : center;
+  text-indent : 0px;
+  background :#ef9a9a;
+  width : 500px;
+  height :100px;
+  left : 50%;
+  margin-left : -250px;
+  top : 125px;
+  position : absolute;
+} 
+
+#midBox2 {
+  position : absolute;
+  top : 190px;
+  left : 50%;
+  width : 500px;
+  height : 20px;
+  margin-left : -250px;
+  background : #eeefee;
+}
+
+#LogIn2 {
+  text-align : center;
+  display : flex;
+  flex-direction : column;
+  width : 500px;
+  position : absolute;
+  left : 50%;
+  margin-left : -250px;
+  top : 205px;
+  height : 200px;
+}

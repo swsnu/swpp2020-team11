@@ -6,20 +6,23 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store, { history } from './store/store';
-import axios from 'axios';
 import 'antd/dist/antd.css';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://backend.asapgo.net/';
+
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+axios.defaults.withCredentials = true;
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App history={history}/>
+    <Provider store={ store }>
+      <App history={ history }/>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
 );
-
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

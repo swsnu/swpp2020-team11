@@ -4,11 +4,13 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import accountReducer from './reducers/account';
 import planReducer from './reducers/plan';
+import suggestReducer from './reducers/suggest';
 
 export const history = createBrowserHistory();
 const rootReducer = combineReducers({
   account: accountReducer,
   plan: planReducer,
+  suggest: suggestReducer,
   router: connectRouter(history),
 });
 export const middlewares = [thunk, routerMiddleware(history)];

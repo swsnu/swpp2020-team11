@@ -68,6 +68,8 @@ def sign_up(request):
             nickname=nickname, phone_number=phone_number)
     except IntegrityError:
         return HttpResponse(status=HttpStatusCode.NoContent)
+    user = User.objects.get(email=email)
+    auth.login(request, user)
     return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
 
 

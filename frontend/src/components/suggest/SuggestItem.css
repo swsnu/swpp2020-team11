@@ -1,0 +1,13 @@
+.contentsGrid {
+    width: 100%;
+    margin-left: 40px;
+    margin-top: 10px;
+}
+
+.suggestName {
+    font-size: 25pt;
+}
+
+.modifyButton {
+    margin-top: 10px;
+}
