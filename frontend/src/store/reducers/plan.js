@@ -31,7 +31,7 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.ModifyReview:
       const modifyReview = state.reviewDetail.map((review) => {
-        if (review.id == action.value.id) {
+        if (review.id === action.value.id) {
           return { ...review, score: action.value.score, content: action.value.content };
         } else {
           return { ...review };

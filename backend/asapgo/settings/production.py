@@ -1,9 +1,9 @@
 from .secret_manager import get_secret
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost:3000']
+ALLOWED_HOSTS = ['*']
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -18,4 +18,8 @@ DATABASES = {
     }
 }
 
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+CORS_ORIGIN_WHITELIST = ["https://trip.asapgo.net"]
+
+CSRF_TRUSTED_ORIGINS = ["trip.asapgo.net"]
+
+S3_IMAGE_STORAGE = "asapgo-development"

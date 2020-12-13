@@ -16,3 +16,12 @@ export {
   getReviewDetail,
   modifyReview,
 } from './plan';
+
+export {
+  getSuggest,
+  getSuggestDetail,
+  changeSuggestionDetail,
+  createSuggestionDetail,
+  clearSuggestionDetail,
+  putSuggestionDetail,
+} from './suggest';

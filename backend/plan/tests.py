@@ -52,22 +52,13 @@ def setup_review_database():
     User.objects.create_user(**stub_user2)
     feature = Features.objects.create(feature_name='feature', status=1)
     place = Place.objects.create(latitude=37.4772964, longitude=126.958394, type='음식',
-                                 name='food', image_urls='https://search.pstatic.net/common/?' \
-                                                         'autoRotate=true&quality=95&size=168x130&' \
-                                                         'src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20151104_289' \
-                                                         '%2F1446623193931bk3Lq_JPEG%2F167054567652065_1.jpg&type=f',
+                                 name='food', image_key='test1.jpb',
                                  status=1, avg_score=-1)
     place2 = Place.objects.create(latitude=37.47964, longitude=126.9594, type='음식',
-                                  name='food', image_urls='https://search.pstatic.net/common/?' \
-                                                          'autoRotate=true&quality=95&size=168x130&' \
-                                                          'src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20151104_289' \
-                                                          '%2F1446623193931bk3Lq_JPEG%2F167054567652065_1.jpg&type=f',
+                                  name='food', image_key='test2.jpb',
                                   status=1, avg_score=-1)
     place3 = Place.objects.create(latitude=37.47729, longitude=126.939, type='음식',
-                                  name='food', image_urls='https://search.pstatic.net/common/?' \
-                                                          'autoRotate=true&quality=95&size=168x130&' \
-                                                          'src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20151104_289' \
-                                                          '%2F1446623193931bk3Lq_JPEG%2F167054567652065_1.jpg&type=f',
+                                  name='food', image_key='test3.jpb',
                                   status=1, avg_score=-1)
     place.features.add(feature)
     place_reservation = PlaceReservation.objects.create(place=place,
@@ -247,7 +238,7 @@ class PlaceRecommendFunctionTest(TestCase):
         for i, place_type in enumerate(['food', 'scenary', 'activity']):
             for j in range(3):
                 place = Place.objects.create(latitude=36.4772964 + i, longitude=125.958394 + j, type=place_type,
-                                             name=f'{place_type}{j}', image_urls='', status=1, avg_score=-1)
+                                             name=f'{place_type}{j}', image_key='', status=1, avg_score=-1)
                 for feature in features:
                     place.features.add(feature)
                 place.save()
