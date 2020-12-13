@@ -14,6 +14,7 @@ import {
 import SuggestionCreate from './SuggestionCreate';
 import * as actionCreators from '../store/actions/suggest';
 import axios from 'axios';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('react-daum-postcode', () => {
   return function mockDaum({ onComplete }) {
@@ -25,6 +26,8 @@ jest.mock('react-daum-postcode', () => {
     </div>);
   };
 });
+
+jest.spyOn(FileReader.prototype, 'readAsDataURL');
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd');
@@ -205,21 +208,24 @@ describe('<SuggestionCreate/>', () => {
     expect(spyPutSuggestionDetail).toHaveBeenCalled();
   });
 
-  it('should not call create suggest detail if image not setted', () => {
+  it('should not call create suggest detail if image not setted', async () => {
     const component = mount(suggestion(initialSuggestDetail));
     const input = component.find('.create-form-button button');
-    input.simulate('click');
+    await act(async () => {
+      input.simulate('click');
+    });
   });
 
-  it('should not call create suggest detail if image not setted', () => {
+  it('should not call create suggest detail if image not setted', async () => {
     const component = mount(suggestion(initialSuggestDetail));
     const wrapper = component.find('SuggestionCreate').instance();
     wrapper.setState({ fileList: [{ 'status': 'done' }] });
     component.update();
     const input = component.find('.create-form-button button');
-    input.simulate('click');
+    await act(async () => {
+      input.simulate('click');
+    });
   });
-
 
   it('should call create suggest detail if click submit button and this is create phase', () => {
     const spyCreateSuggestionDetail = jest.spyOn(actionCreators, 'createSuggestionDetail')
@@ -410,7 +416,6 @@ describe('<SuggestionCreate/>', () => {
     expect(spyAxios).toHaveBeenCalled();
   });
 
-
   it('should upload image if every conditions are valid', () => {
     const spyAxios = jest.spyOn(axios, 'post')
       .mockImplementation((url) => {
@@ -474,6 +479,19 @@ describe('<SuggestionCreate/>', () => {
     const file = {
       url: 'test.com',
       preview: '',
+      origineFileObj: '',
+    };
+
+    input.simulate('change', file);
+  });
+
+  it('should change state if image is changed', () => {
+    const component = mount(suggestion(stubInitialState));
+    const input = component.find('.spy-onpreview');
+
+    const file = {
+      url: '',
+      preview: 'test.com',
       origineFileObj: '',
     };
 
