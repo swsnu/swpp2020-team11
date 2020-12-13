@@ -11,7 +11,8 @@ import PlanReservation from './containers/PlanReservation';
 import History from './containers/History';
 import ReviewCreate from './components/review/ReviewCreate';
 import ReviewEdit from './components/review/ReviewEdit';
-import Suggest from './containers/Suggestion';
+import Suggestion from './containers/Suggestion';
+import SuggestionCreate from './containers/SuggestionCreate';
 import './App.css';
 
 function App(props) {
@@ -29,7 +30,9 @@ function App(props) {
           <Route path='/plan/history' exact component={ History }/>
           <Route path='/review/:id/edit' exact component={ ReviewEdit }/>
           <Route path='/review/:id/create' exact component={ ReviewCreate }/>
-          <Route path='/suggest' exact component={ Suggest }/>
+          <Route path='/suggest' exact component={ Suggestion }/>
+          <Route path='/suggest/create' exact component={ SuggestionCreate }/>
+          <Route path='/suggest/:id/edit' exact component={ SuggestionCreate }/>
         </Switch>
       </div>
     </ConnectedRouter>

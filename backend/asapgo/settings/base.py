@@ -40,11 +40,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -103,7 +103,20 @@ USE_TZ = True
 
 AUTH_USER_MODEL = 'account.User'
 
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+SESSION_COOKIE_SAMESITE = 'None'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_DOMAIN = 'trip.asapgo.net'
+
+CSRF_COOKIE_SECURE = True
+
+CSRF_COOKIE_SAMESITE = 'None'
 
 STATIC_URL = '/static/'

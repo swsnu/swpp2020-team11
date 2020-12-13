@@ -3,6 +3,19 @@ import { connectRouter } from 'connected-react-router';
 
 import { history, middlewares } from '../store/store';
 
+export const initialSuggestDetail = {
+  'explanation': '',
+  'extraAddress': '',
+  'hashedImageKey': '',
+  'location': {
+    'lat': 0,
+    'lng': 0,
+  },
+  'name': '',
+  'roadAddress': '',
+  'tags': '',
+};
+
 export const stubInitialState = {
   account: {
     isLoggedIn: false,
@@ -18,7 +31,7 @@ export const stubInitialState = {
   },
   suggest: {
     suggest: [],
-    suggestDetail: {},
+    suggestDetail: initialSuggestDetail,
   },
 };
 
@@ -72,12 +85,40 @@ export const stubReservation = {
     '298ed838020eb89b4eb9dbcec9db4eca68820ed839dec8b9c2e706e67.png',
 };
 
-export const stubSuggestDetail = {
+export const stubSuggestListItem = {
   'id': 1,
   'place': { 'name': 'good', 'lat': 30, 'lng': 127, 'score': 0 },
   'updated_at': '2020-12-08T13:27:52.396Z',
   'status': 1,
   'hashTags': ['test'],
+};
+
+export const stubSuggestDetail = {
+  'id': 1,
+  'location': { 'lat': 30, 'lng': 127 },
+  'updated_at': '2020-12-08T13:27:52.396Z',
+  'status': 1,
+  'tags': ['test'],
+  'explanateion': 'test',
+  'hashedImageKey': 'test.jpg',
+  'name': 'test',
+  'roadAddress': 'test',
+  'explanation': 'test',
+  'extraAddress': 'test',
+};
+
+
+export const stubInitialSuggestDetail = {
+  hashedImageKey: '',
+  name: '',
+  explanation: '',
+  tags: '',
+  extraAddress: '',
+  roadAddress: '',
+  location: {
+    lng: 0,
+    lat: 0,
+  },
 };
 
 export const stubSuggest = [
@@ -117,9 +158,9 @@ const getMockReducer = (initialState) => jest.fn(
 
 export const getMockStore = (initialState) => {
   const rootReducer = combineReducers({
-    account: initialState.account ? getMockReducer(initialState.account) : {},
-    plan: initialState.plan ? getMockReducer(initialState.plan) : {},
-    suggest: initialState.suggest ? getMockReducer(initialState.suggest) : {},
+    account: initialState.account ? getMockReducer(initialState.account) : getMockReducer({}),
+    plan: initialState.plan ? getMockReducer(initialState.plan) : getMockReducer({}),
+    suggest: initialState.suggest ? getMockReducer(initialState.suggest) : getMockReducer({}),
     router: connectRouter(history),
   });
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

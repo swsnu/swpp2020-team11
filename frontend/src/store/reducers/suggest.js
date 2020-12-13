@@ -2,7 +2,18 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
   suggest: [],
-  suggestDetail: {},
+  suggestDetail: {
+    hashedImageKey: '',
+    name: '',
+    explanation: '',
+    tags: '',
+    extraAddress: '',
+    roadAddress: '',
+    location: {
+      lng: 0,
+      lat: 0,
+    },
+  },
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,6 +23,16 @@ const reducer = (state = initialState, action) => {
 
     case actionTypes.GetSuggestionDetail:
       return { ...state, suggestDetail: action.value };
+
+    case actionTypes.ClearSuggestionDetail:
+      return {
+        ...state,
+        suggestDetail: initialState.suggestDetail,
+      };
+
+    case actionTypes.ModifySuggestionDetail:
+      const newDetail = { ...state.suggestDetail, [action.key]: action.value };
+      return { ...state, suggestDetail: newDetail };
 
     default:
       break;

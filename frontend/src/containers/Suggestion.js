@@ -39,7 +39,10 @@ class Suggestion extends Component {
         <div className="suggestList">
           <Button
             className="newSuggestButton"
-            onClick={ () => this.props.history.push('/suggest/create') }
+            onClick={ () => {
+              this.props.onClearSuggestDetail();
+              this.props.history.push('/suggest/create');
+            } }
           >
             New Suggestion
           </Button>
@@ -68,8 +71,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onGetSuggest: () =>
-      dispatch(actionCreators.getSuggest()),
+    onGetSuggest: () => dispatch(actionCreators.getSuggest()),
+    onClearSuggestDetail: () => dispatch(actionCreators.clearSuggestionDetail()),
   };
 };
 

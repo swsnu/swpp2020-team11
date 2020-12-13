@@ -34,8 +34,16 @@ class Features(models.Model):
 
 
 class Place(models.Model):
+    STATUS = (
+        (1, 'suggested'),
+        (2, 'verified'),
+        (3, 'denied'),
+    )
+
     latitude = models.FloatField()
     longitude = models.FloatField()
+    roadAddress = models.TextField()
+    extraAddress = models.TextField()
     type = models.CharField(max_length=64)
     features = models.ManyToManyField(
         Features,
@@ -43,8 +51,8 @@ class Place(models.Model):
         blank=True
     )  # temporary
     name = models.CharField(max_length=64, null=True)
-    image_urls = models.URLField(null=True)
-    status = models.IntegerField()  # temporary
+    image_key = models.TextField()
+    status = models.IntegerField(choices=STATUS)
     avg_score = models.FloatField()
 
 
@@ -164,7 +172,6 @@ class HashTag(models.Model):
         related_name='hashtag_feature',
         null=True
     )
-    count = models.IntegerField()
 
 
 class Instagram(models.Model):

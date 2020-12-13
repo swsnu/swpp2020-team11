@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import './SignIn.css';
 
 class SignIn extends Component {
   state = {
@@ -25,9 +26,13 @@ class SignIn extends Component {
     };
 
     return (
-      <div className="SignIn">
-        <h1>SignIn</h1>
-        <div className="Login">
+      <div id = "SignIn" className="SignIn">
+        <div id = "topBox"></div>
+        <div id = "topBar">
+          <h1>SignIn</h1>
+        </div>
+        <div id = "midBox2"></div>
+        <div id = "LogIn2" className="Login">
           <Form
             name="normal_login"
             className="login-form"
