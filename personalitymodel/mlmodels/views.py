@@ -30,7 +30,6 @@ neuro.load_state_dict(torch.load('./mlmodels/ml_model/modelneuro.pth', map_locat
 @require_http_methods(['GET'])
 def personality(request):
     req_data = json.loads(request.body.decode())
-    print(req_data)
     openness_data = req_data.get('openness', None)
     cons_data = req_data.get('cons', None)
     extro_data = req_data.get('extro', None)
@@ -47,6 +46,5 @@ def personality(request):
     agree.eval()
     neuro.eval()
     score = [openness(openness_data).item(), cons(cons_data).item(), extro(extro_data).item(), agree(agree_data).item(), neuro(neuro_data).item()]
-    print(score)
     return JsonResponse({'score': score})
 
