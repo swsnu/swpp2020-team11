@@ -1,23 +1,19 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
-import accountReducer from './reducers/account';
-import planReducer from './reducers/plan';
-import suggestReducer from './reducers/suggest';
-
+import rootReducer from './root-reducer';
+import { persistStore } from 'redux-persist';
 export const history = createBrowserHistory();
-const rootReducer = combineReducers({
-  account: accountReducer,
-  plan: planReducer,
-  suggest: suggestReducer,
-  router: connectRouter(history),
-});
+
 export const middlewares = [thunk, routerMiddleware(history)];
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(rootReducer,
+
+export const store = createStore(rootReducer,
   composeEnhancers(
     applyMiddleware(...middlewares)));
 
-export default store;
+export const persistor = persistStore(store);
+
+export default { store, persistor };
