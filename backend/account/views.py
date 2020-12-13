@@ -1,5 +1,6 @@
 import json
 import random
+import requests
 from collections import defaultdict
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,7 +13,7 @@ from django.db import IntegrityError
 from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
-from .models import User, Personality, PersonalityTestQuestion
+from .models import User, Personality, PersonalityTestQuestion, PersonalityType
 
 
 @ensure_csrf_cookie
@@ -79,15 +80,19 @@ def personality_check(request):
     if request.method == 'GET':
         question_list = list(PersonalityTestQuestion.objects.values('id', 'question').all())
         random.shuffle(question_list)
+        answer = False
+        if(Personality.objects.filter(user=request.user).count()>0):
+            answer = True
         return JsonResponse({
-            'questions': question_list,
+            'questions': question_list, 'answer': answer
         })
     req = json.loads(request.body.decode())
-    req = {int(k): int(v) for k, v in req.items()}
-    questions = PersonalityTestQuestion.objects.filter(id__in=list(req.keys())).all()
-    summarize = defaultdict(int)
-    for question in questions:
-        summarize[question.type] += question.weight * req.get(question.id, 0)
-    for personality_type, value in summarize.items():
-        Personality(user=request.user, score=value, type=personality_type).save()
+    req = [int(v) for k, v in req.items()]
+    personality_answer = {'openness':req[0:5], 'cons':req[5:10], 'extro':req[10:15], 'agree':req[15:20], 'neuro':req[20:25]}
+    res = requests.get('http://localhost:8080/mlmodels/',data=json.dumps(personality_answer))
+    total_score = res.json()
+    total_score = total_score.get('score', None)
+    personality_type = PersonalityType.objects.all()
+    for score, p_type in zip(total_score, personality_type):    #O, C, E, A, N sequence!!
+        Personality(user=request.user, score=score, type=p_type).save()
     return HttpResponse()

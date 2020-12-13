@@ -1,4 +1,5 @@
 import json
+import responses
 
 from unittest.mock import patch
 from django.test import TestCase
@@ -138,7 +139,6 @@ class SignOutTest(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(auth_logout_function.call_count, 1)
 
-
 class PersonalityCheckTest(APITestCase):
     url = '/api/user/personality_check/'
 
@@ -149,14 +149,25 @@ class PersonalityCheckTest(APITestCase):
             for i in range(10):
                 PersonalityTestQuestion(question=f'type {f_type} question {i}', type=p_type, weight=5).save()
 
+
     def test_get_questions_with_valid_case(self):
         response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['answer'], False)
+        user = User.objects.get(id=1)
+        p_type = PersonalityType.objects.get(id=1)
+        Personality(user=user, score=20.0, type=p_type).save()
+        response = self.client.get(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(json.loads(response.content)['answer'], True)
 
+    @responses.activate
     def test_save_personality_with_valid_case(self):
-        test_result = {str(i): '3' for i in range(50)}
+        responses.add(responses.GET, 'http://localhost:8080/mlmodels/',
+                  body='{ "score": [20.0, 20.0, 20.0, 20.0, 20.0] }', status=200,
+                  content_type='application/json')
+        test_result = {str(i): '3' for i in range(25)}
         response = self.client.post(self.url, test_result,
-                                   content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
+                                content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Personality.objects.count(), 5)
 
