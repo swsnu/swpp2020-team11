@@ -1,11 +1,6 @@
-* {
-  font-family: Zapfino, serif;
-  font-weight : bold;
-}
-
 #topBox {
   position : absolute;
-  background : #ba6b6c;
+  background : lightgrey;
   left : 50%;
   width : 500px;
   height : 25px;
@@ -18,14 +13,14 @@
   font-size : 20px;
   text-align : center;
   text-indent : 0px;
-  background :#ef9a9a;
+  background : lightgrey;
   width : 500px;
   height :100px;
   left : 50%;
   margin-left : -250px;
   top : 125px;
   position : absolute;
-} 
+}
 
 #midBox2 {
   position : absolute;
