@@ -4,6 +4,11 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { withRouter } from 'react-router-dom';
 import { Pagination } from 'antd';
+import './History.css';
+import historyEmptyImg from '../assets/img/history_empty_suggest.jpg';
+import { Image, Typography, Button } from 'antd';
+const { Paragraph } = Typography;
+
 
 class History extends Component {
   state = {
@@ -45,7 +50,25 @@ class History extends Component {
         </div>
       );
     } else {
-      return (<div className='empty'>No history</div>);
+      return (
+        <div id = 'historyEmpty' className='empty'>
+          <Image
+            preview = { false }
+            src = { historyEmptyImg }
+            className = "historyEmptyImg"
+          />
+          <div id = "historyEmptyText" >
+            <Paragraph>
+            여행 이력이 없습니다! <br></br>
+            ASAP GO를 이용하여 지금 바로 여행가세요!
+            </Paragraph>
+          </div>
+          <Button id = "historyToMain" className="historyToMain"
+            onClick={ () => this.props.history.push('/') }
+          >
+          메인 화면으로 돌아가기
+          </Button>
+        </div>);
     }
   }
 }

@@ -62,7 +62,8 @@ class MainPage extends Component {
       style={ {
         border: 'None',
         fontSize: '18px',
-        width: '40px',
+        width: '60px',
+        height: '30px',
       } }
       className="head-count-input"
       min={ 1 }
