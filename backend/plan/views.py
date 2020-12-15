@@ -1,4 +1,5 @@
 import json
+import random
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
@@ -8,7 +9,7 @@ from common.util.auth_util import login_required
 from common.util.http_util import HttpStatusCode
 
 from account.models import User
-from .models import Plan, HalfDayOffReservation, Review, Place, Taxi, TransportationReservation
+from .models import Plan, HalfDayOffReservation, Review, Place, Taxi, TransportationReservation, PlaceReservation
 
 
 # dummy plan function for test
@@ -28,23 +29,44 @@ def suggested_plan(request):
         plan = Plan(user=request.user, head_count=head_count, created_at=timezone.now(),
                     started_at=timezone.now(), ended_at=timezone.now())
         plan.save()
-        reservation = HalfDayOffReservation(plan=plan, transportation=taxi_reservation)
+        while True:
+            activity_id = random.randint(0,Place.objects.all().count())
+            scene_id = random.randint(0,Place.objects.all().count())
+            activity = Place.objects.all()[activity_id]
+            scene = Place.objects.all()[scene_id]
+            if activity_id != scene_id: #and activity.type != '음식점' and scene.type != '음식점':
+                break
+        dinner = Place.objects.filter(type='음식점')
+        dinner_id = random.randint(0, dinner.count())
+        dinner = dinner[dinner_id]
+        activity_re = PlaceReservation(place=activity, reservation_name=request.user.nickname, status=1, head_count=1, tot_price=10000)
+        activity_re.save()
+        dinner_re = PlaceReservation(place=dinner, reservation_name=request.user.nickname, status=1, head_count=1, tot_price=10000)
+        dinner_re.save()
+        scene_re = PlaceReservation(place=scene, reservation_name=request.user.nickname, status=1, head_count=1, tot_price=10000)
+        scene_re.save()
+        reservation = HalfDayOffReservation(plan=plan, transportation=taxi_reservation, activity=activity_re, dinner=dinner_re, scenary=scene_re)
         reservation.save()
+    start_date = plan.started_at + timezone.timedelta(hours=9)
+    start_date = start_date.strftime("%m/%d %H:%M")
+    end_date = plan.ended_at + timezone.timedelta(hours=13)
+    end_date = end_date.strftime("%m/%d %H:%M")
+    halfdayoff = HalfDayOffReservation.objects.get(plan_id=plan.id)
     result = {
         'imageUrls': [
-            'https://www.puzzlesarang.com/shop/data/goods/1569406172621m0.jpg',
-            'https://img.huffingtonpost.com/asset/5bf24ac824000060045835ff.jpeg?ops=scalefit_720_noupscale&format=webp',
-            'https://pbs.twimg.com/media/Dxai_-gUYAEktpi?format=jpg&name=medium',
+            halfdayoff.activity.place.image_urls,
+            halfdayoff.dinner.place.image_urls,
+            halfdayoff.scenary.place.image_urls
         ],
         'hashTags': [
-            "조용한",
-            "고급스러운",
+            "활기찬",
+            "분위기 좋은",
             "경치가 아름다운"
         ],
         'information': {
-            'headCount': 2,
-            'startTime': '1/23 18:30',
-            'endTime': '1/23 23:30',
+            'headCount': 1,
+            'startTime': start_date,
+            'endTime': end_date,
             'expectedBudget': '300000',
             'travelDistance': '150000',
         }
@@ -56,12 +78,14 @@ def suggested_plan(request):
 @login_required
 def history(request):
     plans = Plan.objects.order_by('started_at').filter(user_id=request.user.id)
+    print(plans)
     halfdayoff = HalfDayOffReservation.objects.filter(plan_id__in=[plan.id for plan in plans])
     places = []
     for index, half in enumerate(halfdayoff):
         place = []
         dayoff = half
         act = dayoff.activity.place
+        print(act.features)
         place.append({"id": act.id, "lat": act.latitude, "lng": act.longitude, "name": act.name,
                       "img_urls": act.image_key, "tag": [feature.feature_name for feature in act.features.all()]})
         din = dayoff.dinner.place

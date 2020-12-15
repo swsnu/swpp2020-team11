@@ -24,9 +24,9 @@ function App(props) {
           <Route path='/' exact component={ Main }/>
           <Route path='/plan/reservation' exact component={ PlanReservation }/>
           <Route path='/plan' exact component={ PlanPage }/>
-          <Route path='/sign_in/' exact component={ SignIn }/>
+          <Route path='/sign_in' exact component={ SignIn }/>
           <Route path='/personality_check' exact component={ PersonalityCheck }/>
-          <Route path='/sign_up/' exact component={ SignUp }/>
+          <Route path='/sign_up' exact component={ SignUp }/>
           <Route path='/plan/history' exact component={ History }/>
           <Route path='/review/:id/edit' exact component={ ReviewEdit }/>
           <Route path='/review/:id/create' exact component={ ReviewCreate }/>

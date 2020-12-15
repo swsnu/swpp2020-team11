@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['nickname']
 
     def as_dict(self):
-        return {'id': self.id, 'email': self.email}
+        return {'id': self.id, 'email': self.email, 'is_loggedIn': self.is_authenticated}
 
 
 class PersonalityType(models.Model):

@@ -29,6 +29,7 @@ def sign_in(request):
     if not user.check_password(raw_password=password):
         return HttpResponse(status=HttpStatusCode.NoContent)
     auth.login(request, user)
+    print(request.user.is_authenticated)
     return JsonResponse(user.as_dict(), status=HttpStatusCode.Created)
 
 
@@ -43,6 +44,7 @@ def sign_out(request):
 @ensure_csrf_cookie
 @require_http_methods(['GET'])
 def token(request):
+    print(request.user.is_authenticated)
     if auth.SESSION_KEY in request.session:
         return JsonResponse(request.user.as_dict())
     return HttpResponse(status=HttpStatusCode.UnAuthorized)
@@ -66,6 +68,7 @@ def sign_up(request):
     try:
         user = User.objects.create_user(email=email, password=password,
             nickname=nickname, phone_number=phone_number)
+        auth.login(request, user)
     except IntegrityError:
         return HttpResponse(status=HttpStatusCode.NoContent)
     user = User.objects.get(email=email)
@@ -89,9 +92,11 @@ def personality_check(request):
     req = json.loads(request.body.decode())
     req = [int(v) for k, v in req.items()]
     personality_answer = {'openness':req[0:5], 'cons':req[5:10], 'extro':req[10:15], 'agree':req[15:20], 'neuro':req[20:25]}
-    res = requests.get('http://localhost:8080/mlmodels/',data=json.dumps(personality_answer))
+    res = requests.get('http://personal-ml.eba-squwmi92.ap-northeast-2.elasticbeanstalk.com/mlmodels/',data=json.dumps(personality_answer))
+    print(res)
     total_score = res.json()
     total_score = total_score.get('score', None)
+    print(total_score)
     personality_type = PersonalityType.objects.all()
     for score, p_type in zip(total_score, personality_type):    #O, C, E, A, N sequence!!
         Personality(user=request.user, score=score, type=p_type).save()
