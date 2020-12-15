@@ -28,7 +28,7 @@ class ChromeDriver:
         atexit.register(self.cleanup)
 
     @page_load_waiter
-    def login(self, username, password):
+    def login_insta(self, username, password):
         self.driver.get(LOGIN_URL)
         self.driver.implicitly_wait(self.INTRINSIC_WAIT)
         user = self.driver.find_element_by_name('username')

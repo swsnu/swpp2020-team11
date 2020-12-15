@@ -23,9 +23,9 @@ def safe_try(func):
         try:
             return func(*args, **kwargs)
         except:
-            with open(f"{ROOT_DIR}/crawler.log", "w") as log:
+            with open(f"{ROOT_DIR}/error_log/crawler.log", "w") as log:
                 traceback.print_exc(file=log)
-            with open(f'{ROOT_DIR}/error.html', 'w') as f:
+            with open(f'{ROOT_DIR}/error_log/error.html', 'w') as f:
                 print(chrome_driver.driver.page_source, file=f)
             return None
 
