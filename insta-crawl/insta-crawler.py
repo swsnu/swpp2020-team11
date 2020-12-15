@@ -1,11 +1,31 @@
-from instagram.client import InstagramAPI
+import json
 
-access_token = "YOUR_ACCESS_TOKEN"
-client_secret = "YOUR_CLIENT_SECRET"
-api = InstagramAPI(access_token=access_token, client_secret=client_secret)
-recent_media, next_ = api.user_recent_media(user_id="userid", count=10)
+from tqdm import tqdm
 
-api.location_recent_media(count, max_id, location_id)*
+from models.crawler import ChromeDriver
+from secret_manager import get_secret
 
-for media in recent_media:
-   print media.caption.text
+USERNAME = get_secret('instagram').get('USERNAME')
+PASSWORD = get_secret('instagram').get('PASSWORD')
+
+driver = ChromeDriver()
+areas = driver.get_location_areas()
+areas = [area for area in areas if area.name == "Seoul"]
+fail_area = []
+fail_location = []
+for area in tqdm(areas):
+    results = []
+    locations = driver.get_locations(area)
+    if locations is None:
+        fail_area.append(area)
+    for i, location in enumerate(tqdm(locations)):
+        try:
+            results.append(driver.get_location_detail(location))
+        except:
+            fail_location.append(location.name)
+        if i % 100 and i != 0:
+            with open(f'result/{area.name}{i // 100}', 'w') as f:
+                f.write(json.dumps(results))
+
+with open('result/fail', 'w') as f:
+    f.write(json.dumps(fail_location))
