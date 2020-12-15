@@ -8,7 +8,6 @@ from botocore.exceptions import ClientError
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 
-
 def get_secret(secret_name):
     region_name = "ap-northeast-2"
 
