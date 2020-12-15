@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import * as actionCreators from './account';
-import store, { history } from '../store';
+import { store, history } from '../store';
 
 const stubUser = {
   'id': 1,

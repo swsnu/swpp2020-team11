@@ -4,6 +4,7 @@ import { Image, Button, Typography } from 'antd';
 import './PlanReservation.css';
 import { connect } from 'react-redux';
 
+
 const { Paragraph } = Typography;
 
 import moment from 'moment';
@@ -32,7 +33,7 @@ class PlanReservation extends Component {
             </Marker.Group>
           </StaticGoogleMap>
         </div>
-        <div className="TaxiInfo">
+        <div id = "Taxidata" className="TaxiInfo">
           <Paragraph>{ this.props.taxi.taxiType }</Paragraph>
           <Paragraph>{ this.props.taxi.carNumber }</Paragraph>
           <Paragraph>{ this.props.taxi.phoneNumber } </Paragraph>
@@ -41,7 +42,7 @@ class PlanReservation extends Component {
         <Button className="ToMainPanel"
           onClick={ () => this.props.history.push('/') }
         >
-          메인 화면으로 돌아가기
+          Return to the Main Page
         </Button>
       </div>
     );

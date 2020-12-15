@@ -1,36 +1,38 @@
 .TaxiImage {
     width : 400px;
     position : absolute;
-    top : 10%;
+    top : 100px;
     left : 50%;
 }
 
-/* body {
-    font-family : 'nanumsquare';
-} */
-
-.TaxiInfo {
+* {
+    font-family: 'NanumSquare', sans-serif;
+}
+#Taxidata {
+    font-size : 15px;
     position : absolute;
-    top : 40%;
+    top : 300px;
     left : 50%;
     text-align : left;
 }
 
 .GoogleAPI {
     position : absolute;
-    top : 80px;
+    top : 100px;
     left : 25%;
 }
 
 .ToMainPanel {
-    background : rgba(145, 116, 120, 1);
-    width : 25%;
+    font-size : 15px;
+    background : rgb(130, 106, 110);
+    width : 300px;
     color : white;
+    height : 40px;
     padding : 5px;
     font-weight: 450;
     text-align : center;
     position : absolute;
-    top: 70%;
+    top: 500px;
     left: 50%;
     transform: translate(-50%, -50%)
 }

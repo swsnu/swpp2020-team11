@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import * as actionCreators from './suggest';
-import store from '../store';
+import { store } from '../store';
 import { stubSuggest, stubSuggestDetail, stubInitialSuggestDetail } from '../../test-utils/mocks';
 
 describe('ActionCreators', () => {
