@@ -9,9 +9,10 @@
 }
 
 #historyEmptyText {
+  font-family:sans-serif;
   text-align : center;
   position : absolute;
-  left : -300px;
+  left : -270px;
   top : 200px;
   font-weight: 450;
   font-size : 18px;
@@ -22,7 +23,7 @@
   left : -280px;
   top : 280px;
   font-size : 15px;
-  background : rgb(65, 53, 55);
+  background : rgb(130, 106, 110);
   width : 300px;
   color : white;
   height : 40px;

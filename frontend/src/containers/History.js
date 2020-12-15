@@ -59,14 +59,14 @@ class History extends Component {
           />
           <div id = "historyEmptyText" >
             <Paragraph>
-            여행 이력이 없습니다! <br></br>
-            ASAP GO를 이용하여 지금 바로 여행가세요!
+            You don&#39;t have travel history! <br></br>
+            Take a trip with ASAP GO today!
             </Paragraph>
           </div>
           <Button id = "historyToMain" className="historyToMain"
             onClick={ () => this.props.history.push('/') }
           >
-          메인 화면으로 돌아가기
+          Return to the Main Page
           </Button>
         </div>);
     }
