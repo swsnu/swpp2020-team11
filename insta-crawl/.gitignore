@@ -1,3 +1,4 @@
 asset/
 error_log/
 result/
+__pycache__/
