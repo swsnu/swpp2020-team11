@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { Button, Space, Image, Typography } from 'antd';
 import './PlanPage.css';
+import { getBaseUrl } from '../utils/imageBase';
 
 const { Text } = Typography;
 
@@ -14,13 +15,14 @@ class PlanPage extends Component {
   }
 
   render() {
+    const baseUrl = getBaseUrl();
     const images = this.props.plan.imageUrls.map((url, idx) => (
       <Image
         key={ 'place-image-' + idx.toString() }
         width={ 400 }
         height={ 300 }
         preview={ false }
-        src={ url }
+        src={ baseUrl + url }
       />),
     );
     const hashTags = this.props.plan.hashTags.map((tag, idx) => (

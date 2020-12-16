@@ -4,6 +4,7 @@ import './ReviewCreate.css';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/index';
 import { withRouter } from 'react-router-dom';
+import { getBaseUrl } from '../../utils/imageBase';
 
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 class ReviewCreate extends React.Component {
@@ -48,6 +49,7 @@ class ReviewCreate extends React.Component {
     this.props.history.push('/plan/history');
   }
   render() {
+    const baseUrl = getBaseUrl();
     if (!this.props.isLoggedIn) {
       this.props.history.push('/sign_in');
     }
@@ -74,7 +76,7 @@ class ReviewCreate extends React.Component {
           </Steps>
           <br/>
           <Space direction="vertical">
-            <img src={place.img_urls} height='400' width='400'></img>
+            <img src={baseUrl + place.img_urls} height='400' width='400'></img>
             <h2>{place.name} <Tag color='pink'> #{place.tag} </Tag></h2>
             <Rate
               tooltips={desc}
