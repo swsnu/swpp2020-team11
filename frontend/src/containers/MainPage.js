@@ -45,7 +45,7 @@ class MainPage extends Component {
         (position) => {
           this.props.onGetPlan(level, this.state.headCount, position.coords.latitude, position.coords.longitude);
         }, function(error) {
-          console.error(error);
+          console.log(error);
         }, {
           enableHighAccuracy: false,
           maximumAge: 100,
