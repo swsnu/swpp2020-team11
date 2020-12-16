@@ -42,7 +42,7 @@ class PlanReservation extends Component {
         <Button className="ToMainPanel"
           onClick={ () => this.props.history.push('/') }
         >
-          Return to the Main Page
+          메인 화면으로 돌아가기
         </Button>
       </div>
     );

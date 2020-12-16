@@ -30,7 +30,7 @@ class PlanPage extends Component {
     const information = <>
       <Text>총 인원: { this.props.plan.information.headCount }명</Text>
       <br/>
-      <Text>예상 비용: { this.props.plan.information.expectedBudget }원</Text>
+      <Text>예상 택시 비용: { this.props.plan.information.expectedBudget }원</Text>
       <br/>
       <Text>예상 귀가 시간: { this.props.plan.information.endTime }</Text>
       <br/>
@@ -68,12 +68,13 @@ class PlanPage extends Component {
 const mapStateToProps = (state) => {
   return {
     plan: state.plan.plan,
+    position: state.plan.position,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onReservation: () => dispatch(actionCreators.makeReservation()),
+    onReservation: (position) => dispatch(actionCreators.makeReservation(position)),
   };
 };
 

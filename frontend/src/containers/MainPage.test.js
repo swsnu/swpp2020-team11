@@ -65,9 +65,30 @@ describe('<MainPage />', () => {
         return (dispatch) => {
         };
       });
+    const mockGeolocation = {
+      getCurrentPosition: jest.fn().mockImplementation((fun1, fun2, fun3) => {
+        fun1({ coords: { latitude: 1, longitude: 1 } });
+        fun2();
+      }),
+    };
+    global.navigator.geolocation = mockGeolocation;
     mainImage.simulate('click');
     expect(wrapper.state.headCount).toBe(2);
-    expect(spyLogOut).toBeCalledWith(1, 2);
+    expect(spyLogOut).toBeCalledWith(1, 2, 1, 1);
+  });
+
+  it('can not use navigator.', () => {
+    const logInState = { ...stubInitialState, account: stubAccount };
+    const component = mount(mainPage(logInState));
+    const mainImage = component.find('img').at(0);
+    const wrapper = component.find('MainPage').instance();
+    const spyLog = jest.spyOn(console, 'log')
+      .mockImplementation(() => {
+      });
+    global.navigator.geolocation = false;
+    mainImage.simulate('click');
+    expect(wrapper.state.headCount).toBe(2);
+    expect(spyLog).toBeCalledWith('GPS를 지원하지 않습니다');
   });
 
   it('should show modal if not logged in user click image.', () => {
