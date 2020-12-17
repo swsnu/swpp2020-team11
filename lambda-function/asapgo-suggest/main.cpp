@@ -117,13 +117,17 @@ void calculate_distances(vector <Place>& places1, vector <Place>& places2, vecto
 
 static invocation_response my_handler(invocation_request const& req) {
   priority_queue <Plan, vector<Plan>, cmp> plan_min_heap;
-
   JsonValue json(req.payload);
   if (!json.WasParseSuccessful()) {
     return invocation_response::failure("Failed to parse input JSON", "InvalidJSON");
   }
 
-  auto v = json.View();
+  JsonValue json2(json.View().GetString("body"));
+  if (!json.WasParseSuccessful()) {
+    return invocation_response::failure("Failed to parse input JSON", "InvalidJSON");
+  }
+
+  auto v = json2.View();
 
   // parsing data from request
   auto current_location = Place(v.GetObject("current_location"));
@@ -177,7 +181,8 @@ static invocation_response my_handler(invocation_request const& req) {
   }
   int i = candiate_count - 1;
   Array<Aws::String> result(candiate_count);
-  while (!plan_min_heap.empty()) {
+  while (!p
+  lan_min_heap.empty()) {
     Plan plan = plan_min_heap.top();
     result[i] = plan.json_dump();
     plan_min_heap.pop();
