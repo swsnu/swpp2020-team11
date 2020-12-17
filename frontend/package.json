@@ -29,8 +29,8 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_BACKEND_URL=http://localhost:8000 react-scripts start",
+    "build": "REACT_APP_BACKEND_URL=https://backend.asapgo.net/ react-scripts build",
     "test": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "./node_modules/.bin/eslint src/",
