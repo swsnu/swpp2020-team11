@@ -34,14 +34,16 @@ export const getReservation = (user) => {
   };
 };
 
-export const getPlan = (level, headCount) => {
+export const getPlan = (level, headCount, lat, long) => {
   return (dispatch) => {
     return axios.post(`/api/plan/`, {
       level: level,
       headCount: headCount,
+      lat: lat,
+      long: long,
     })
       .then((res) => {
-        dispatch({ type: actionTypes.GetPlan, value: res.data });
+        dispatch({ type: actionTypes.GetPlan, value: res.data, position: { lat: lat, lng: long } });
         dispatch(push('/plan'));
       })
       .catch((err) => console.log(err));
@@ -50,7 +52,7 @@ export const getPlan = (level, headCount) => {
 
 export const makeReservation = () => {
   return (dispatch) => {
-    return axios.post(`/api/plan/reservation/`)
+    return axios.post(`/api/plan/reservation/`, location)
       .then((res) => {
         dispatch({ type: actionTypes.GetReservation, value: res.data });
         dispatch(push('/plan/reservation'));

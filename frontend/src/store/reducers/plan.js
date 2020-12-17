@@ -11,7 +11,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GetPlan:
-      return { ...state, plan: action.value };
+      return { ...state, plan: action.value, position: action.position };
 
     case actionTypes.GetReservation:
       return { ...state, reservation: action.value };

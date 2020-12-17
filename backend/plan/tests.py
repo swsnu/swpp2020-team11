@@ -1,6 +1,7 @@
 import json
 import datetime
-
+import os
+import responses
 from django.test import TestCase
 from django.utils import timezone
 from common.util.test_utils import APITestCase, NotAllowedTestCase
@@ -8,6 +9,8 @@ from account.models import User, PersonalityType, Personality
 from plan.models import Plan, HalfDayOffReservation, TransportationReservation, \
     Taxi, PlaceReservation, Place, Review, Features, Preference
 from plan.service import place_recommend
+
+os.environ.setdefault('REACT_APP_API_KEY', 'key')
 
 stub_taxi = {
     'phone_number': '010-5882-5467',
@@ -41,9 +44,17 @@ def setup_plan_database():
     taxi_reservation.save()
     user = User.objects.first()
     plan = Plan(user=user, head_count=2, created_at=now,
-                started_at=now, ended_at=now)
+                started_at=now, ended_at=now, total_distance=1000)
     plan.save()
-    reservation = HalfDayOffReservation(plan=plan, transportation=taxi_reservation)
+    place = Place.objects.create(latitude=37.4772964, longitude=126.958394, type='음식',
+                                 name='food', image_key='test1.jpb', status=1, avg_score=-1)
+    Place.objects.create(latitude=37.47964, longitude=126.9594, type='음식',
+                            name='food', image_key='test2.jpb', status=1, avg_score=-1)
+    place_reservation = PlaceReservation.objects.create(place=place,
+                                                        reservation_name='food', status=1, head_count=1,
+                                                        tot_price=10000)
+    reservation = HalfDayOffReservation(plan=plan, activity=place_reservation, dinner=place_reservation,
+                                        scenary=place_reservation,  transportation=taxi_reservation)
     reservation.save()
 
 
@@ -103,17 +114,34 @@ class PlanNotAllowedTestCase(NotAllowedTestCase):
         {'url': 'review/1/', 'method': 'put'},
     ]
 
-
 class PlanTest(APITestCase):
     url = '/api/plan/'
 
     def _setup_database(self):
         Taxi(**stub_taxi).save()
 
+    @responses.activate
     def test_post_with_valid_request(self):
+        distance = '{"distance": { "value": 1 }, "duration": { "value" : 1 } }'
+        element = '{ "elements": [' + distance + ', ' + distance + ', ' + distance + '] }'
+        row = '{ "rows": [' + element + ', ' + element + ',' + element + '] }'
+        responses.add(responses.GET, 'https://maps.googleapis.com/maps/api/distancematrix/json',
+                  body=row, status=200,
+                  content_type='application/json')
+        Place.objects.create(latitude=37.4772964, longitude=126.958394, type='음식',
+                                 name='food', image_key='test1.jpb',
+                                 status=1, avg_score=-1)
+        Place.objects.create(latitude=37.47964, longitude=126.9594, type='음식점',
+                                  name='food', image_key='test2.jpb',
+                                  status=1, avg_score=-1)
+        Place.objects.create(latitude=37.47729, longitude=126.939, type='음식점',
+                                  name='food', image_key='test3.jpb',
+                                  status=1, avg_score=-1)
         data = {
             'level': 1,
             'headCount': 2,
+            'lat': 1,
+            'long' : 1,
         }
         response = self.client.post(self.url, json.dumps(data),
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
@@ -129,15 +157,22 @@ class PlanTest(APITestCase):
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
 
-
 class RervationTest(APITestCase):
     url = '/api/plan/reservation/'
 
     def _setup_database(self):
         setup_plan_database()
 
+    @responses.activate
     def test_post_with_valid_request(self):
-        response = self.client.post(self.url, HTTP_X_CSRFTOKEN=self.csrftoken)
+        responses.add(responses.GET, 'https://maps.googleapis.com/maps/api/distancematrix/json',
+                body='{ "rows": [{ "elements": [{"distance": { "value": 1 }, "duration": { "value" : 1 } }] },'\
+                    '{ "elements": [{"distance": { "value": 1 }, "duration": { "value" : 1 } }, {"distance": { '\
+                    '"value": 1 }, "duration": { "value" : 1 } }] }] }', status=200,
+                content_type='application/json')
+        data = {'lat': 1, 'lng': 1,}
+        response = self.client.post(self.url, json.dumps(data), content_type='application/json',
+                                    HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
 
 
