@@ -17,6 +17,8 @@ using namespace Aws::Utils::Json;
 using namespace Aws::Utils;
 using namespace std;
 
+char const TAG[] = "LAMBDA_ALLOC";
+
 class Place {
 public:
     int id;
@@ -27,8 +29,8 @@ public:
     Place() : id(0), preference(0), lng(0), lat(0) {};
 
     Place(JsonView view) {
-      id = view.GetInteger("id");
-      preference = view.GetDouble("preference");
+      if (view.KeyExists("id")) id = view.GetInteger("id");
+      if (view.KeyExists("preference")) preference = view.GetDouble("preference");
       lng = view.GetDouble("lng");
       lat = view.GetDouble("lat");
     };
@@ -74,7 +76,7 @@ public:
 
 struct cmp {
     bool operator()(Plan& t, Plan& u) {
-      return t.satisfaction < u.satisfaction;
+      return t.satisfaction > u.satisfaction;
     };
 };
 
@@ -101,12 +103,10 @@ double manhattan_distanceEarth(double lat1d, double lng1d, double lat2d, double 
 }
 
 void calculate_distances(vector <Place>& places1, vector <Place>& places2, vector <vector<double>>& distance) {
-  int i_count = static_cast<int>(places1.size());
-  for (int i = 0; i < i_count; ++i) {
+  for (unsigned int i = 0; i < places1.size(); ++i) {
     double lat1 = places1[i].lat;
     double lng1 = places1[i].lng;
-    int j_count = static_cast<int>(places2.size());
-    for (int j = 0; j < j_count; ++j) {
+    for (unsigned int j = 0; j < places2.size(); ++j) {
       double lat2 = places2[j].lat;
       double lng2 = places2[j].lng;
       distance[i][j] = manhattan_distanceEarth(lat1, lng1, lat2, lng2);
@@ -118,7 +118,6 @@ void calculate_distances(vector <Place>& places1, vector <Place>& places2, vecto
 static invocation_response my_handler(invocation_request const& req) {
   priority_queue <Plan, vector<Plan>, cmp> plan_min_heap;
 
-
   JsonValue json(req.payload);
   if (!json.WasParseSuccessful()) {
     return invocation_response::failure("Failed to parse input JSON", "InvalidJSON");
@@ -127,26 +126,22 @@ static invocation_response my_handler(invocation_request const& req) {
   auto v = json.View();
 
   // parsing data from request
-  auto current_location = v.GetObject("current_location");
+  auto current_location = Place(v.GetObject("current_location"));
+
   vector <Place> current;
-  current.push_back({current_location});
+  current.push_back(current_location);
+
   auto time_limit = v.GetDouble("time_limit");
 
   auto activity = Location(v.GetArray("activity"));
-
-  int activity_count = sizeof(activity) / sizeof(activity[0]);
-
   auto dinner = Location(v.GetArray("dinner"));
-  int dinner_count = sizeof(dinner) / sizeof(dinner[0]);
-
   auto scenery = Location(v.GetArray("scenery"));
-  int scenery_count = sizeof(scenery) / sizeof(scenery[0]);
 
   // create vector to store distance between places
-  vector <vector<double>> home2activity_distance(1, vector<double>(activity_count));
-  vector <vector<double>> activity2dinner_distance(activity_count, vector<double>(dinner_count));
-  vector <vector<double>> dinner2scenery_distance(dinner_count, vector<double>(scenery_count));
-  vector <vector<double>> scenary2home_distance(scenery_count, vector<double>(1));
+  vector <vector<double>> home2activity_distance(1, vector<double>(activity.size()));
+  vector <vector<double>> activity2dinner_distance(activity.size(), vector<double>(dinner.size()));
+  vector <vector<double>> dinner2scenery_distance(dinner.size(), vector<double>(scenery.size()));
+  vector <vector<double>> scenary2home_distance(scenery.size(), vector<double>(1));
 
   // calculate and save to vector distance between places
   calculate_distances(current, activity, home2activity_distance);
@@ -155,9 +150,9 @@ static invocation_response my_handler(invocation_request const& req) {
   calculate_distances(scenery, current, scenary2home_distance);
 
   // compare pathes
-  for (int i = 0; i < activity_count; ++i) {
-    for (int j = 0; j < dinner_count; ++j) {
-      for (int k = 0; k < scenery_count; ++k) {
+  for (unsigned int i = 0; i < activity.size(); ++i) {
+    for (unsigned int j = 0; j < dinner.size(); ++j) {
+      for (unsigned int k = 0; k < scenery.size(); ++k) {
         double distance = home2activity_distance[0][i] + \
                           activity2dinner_distance[i][j] + \
                           dinner2scenery_distance[j][k] + \
@@ -169,8 +164,10 @@ static invocation_response my_handler(invocation_request const& req) {
                               dinner[j].preference + \
                               scenery[k].preference;
 
-        if (plan_min_heap.top().satisfaction > satisfaction) continue;
-        if (plan_min_heap.size() >= candiate_count) plan_min_heap.pop();
+        if (plan_min_heap.size() >= candiate_count) {
+          if (plan_min_heap.top().satisfaction > satisfaction) continue;
+          else plan_min_heap.pop();
+        }
 
         Plan plan = Plan(satisfaction, distance / velocity, distance, &activity[i], &dinner[j], &scenery[k]);
 
