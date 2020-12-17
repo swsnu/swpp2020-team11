@@ -1,7 +1,6 @@
 import json
-import responses
-
 from unittest.mock import patch
+import responses
 from django.test import TestCase
 
 from common.util.test_utils import APITestCase, NotAllowedTestCase
@@ -162,7 +161,7 @@ class PersonalityCheckTest(APITestCase):
 
     @responses.activate
     def test_save_personality_with_valid_case(self):
-        responses.add(responses.GET, 'http://localhost:8080/mlmodels/',
+        responses.add(responses.GET, 'http://personal-ml.eba-squwmi92.ap-northeast-2.elasticbeanstalk.com/mlmodels/',
                   body='{ "score": [20.0, 20.0, 20.0, 20.0, 20.0] }', status=200,
                   content_type='application/json')
         test_result = {str(i): '3' for i in range(25)}

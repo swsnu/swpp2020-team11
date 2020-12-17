@@ -1,7 +1,6 @@
 import json
 import random
 import requests
-from collections import defaultdict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, JsonResponse
@@ -55,7 +54,6 @@ def sign_up(request):
         if request.user.is_authenticated:
             return JsonResponse(request.user.as_dict(), status=HttpStatusCode.Created)
         return HttpResponse(status=HttpStatusCode.UnAuthorized)
-
     req_data = json.loads(request.body.decode())
     email = req_data.get('email', None)
     nickname = req_data.get('nickname', None)
@@ -81,15 +79,17 @@ def personality_check(request):
         question_list = list(PersonalityTestQuestion.objects.values('id', 'question').all())
         random.shuffle(question_list)
         answer = False
-        if(Personality.objects.filter(user=request.user).count()>0):
+        if Personality.objects.filter(user=request.user).count()>0:
             answer = True
         return JsonResponse({
             'questions': question_list, 'answer': answer
         })
     req = json.loads(request.body.decode())
     req = [int(v) for k, v in req.items()]
-    personality_answer = {'openness':req[0:5], 'cons':req[5:10], 'extro':req[10:15], 'agree':req[15:20], 'neuro':req[20:25]}
-    res = requests.get('http://localhost:8080/mlmodels/',data=json.dumps(personality_answer))
+    personality_answer = {'openness':req[0:5], 'cons':req[5:10], 'extro':req[10:15],
+                            'agree':req[15:20], 'neuro':req[20:25]}
+    res = requests.get('http://personal-ml.eba-squwmi92.ap-northeast-2.elasticbeanstalk.com/mlmodels/',
+                        data=json.dumps(personality_answer))
     total_score = res.json()
     total_score = total_score.get('score', None)
     personality_type = PersonalityType.objects.all()

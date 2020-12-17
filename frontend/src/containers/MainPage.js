@@ -39,6 +39,23 @@ class MainPage extends Component {
     });
   };
 
+  onGetPlan(level) {
+    if (navigator.geolocation) { // GPS를 지원하면
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.props.onGetPlan(level, this.state.headCount, position.coords.latitude, position.coords.longitude);
+        }, function(error) {
+          console.log(error);
+        }, {
+          enableHighAccuracy: false,
+          maximumAge: 100,
+          timeout: 1000,
+        });
+    } else {
+      console.log('GPS를 지원하지 않습니다');
+    }
+  }
+
   mainImage(hoverImg, img, level) {
     return (
       <Image
@@ -50,7 +67,7 @@ class MainPage extends Component {
         onMouseOut={ (e) => (e.target.src = img) }
         onClick={ () => {
           this.props.isLoggedIn ?
-            this.props.onGetPlan(level, this.state.headCount) :
+            this.onGetPlan(level) :
             this.showPopUp();
         } }
       />
@@ -62,7 +79,8 @@ class MainPage extends Component {
       style={ {
         border: 'None',
         fontSize: '18px',
-        width: '40px',
+        width: '60px',
+        height: '30px',
       } }
       className="head-count-input"
       min={ 1 }
@@ -127,7 +145,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onGetPlan: (level, headCount) => dispatch(actionCreators.getPlan(level, headCount)),
+    onGetPlan: (level, headCount, lat, long) => {
+      dispatch(actionCreators.getPlan(level, headCount, lat, long));
+    },
   };
 };
 

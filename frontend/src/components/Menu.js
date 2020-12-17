@@ -31,7 +31,7 @@ class UserMenu extends Component {
             className="user-menu-button"
             onClick={ () => history.push('/suggest') }
           >
-            suggest place
+            Suggest Place
           </Button>
         </Menu.Item>
         <Menu.Item>

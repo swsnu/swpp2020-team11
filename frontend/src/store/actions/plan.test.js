@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import * as actionCreators from './plan';
-import store from '../store';
+import { store } from '../store';
 
 const stubPlan = {
   'headCount': 1,

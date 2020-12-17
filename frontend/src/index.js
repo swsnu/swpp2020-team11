@@ -5,9 +5,10 @@ import 'antd/dist/antd.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import store, { history } from './store/store';
+import { store, persistor, history } from './store/store';
 import 'antd/dist/antd.css';
 import axios from 'axios';
+import { PersistGate } from 'redux-persist/integration/react';
 
 axios.defaults.baseURL = 'https://backend.asapgo.net/';
 
@@ -18,7 +19,9 @@ axios.defaults.withCredentials = true;
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={ store }>
-      <App history={ history }/>
+      <PersistGate persistor={persistor}>
+        <App history={ history }/>
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),

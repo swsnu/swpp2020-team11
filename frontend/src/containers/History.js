@@ -4,6 +4,11 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { withRouter } from 'react-router-dom';
 import { Pagination } from 'antd';
+import './History.css';
+import historyEmptyImg from '../assets/img/history_empty_suggest.jpg';
+import { Image, Typography, Button } from 'antd';
+const { Paragraph } = Typography;
+
 
 class History extends Component {
   state = {
@@ -45,7 +50,25 @@ class History extends Component {
         </div>
       );
     } else {
-      return (<div className='empty'>No history</div>);
+      return (
+        <div id = 'historyEmpty' className='empty'>
+          <Image
+            preview = { false }
+            src = { historyEmptyImg }
+            className = "historyEmptyImg"
+          />
+          <div id = "historyEmptyText" >
+            <Paragraph>
+            You don&#39;t have travel history! <br></br>
+            Take a trip with ASAP GO today!
+            </Paragraph>
+          </div>
+          <Button id = "historyToMain" className="historyToMain"
+            onClick={ () => this.props.history.push('/') }
+          >
+          Return to the Main Page
+          </Button>
+        </div>);
     }
   }
 }

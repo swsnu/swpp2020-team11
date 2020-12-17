@@ -144,5 +144,16 @@ describe('<History/>', () => {
     const component = mount(history1(initialStateWithoutLogin));
     expect(component.find('.empty')).toHaveLength(1);
   });
+  it('should redirect to main page if user click button.', () => {
+    const component = mount(history1(initialStateWithoutLogin));
+    const button = component.find('button').at(0);
+    const spyHistory = jest.spyOn(history, 'push')
+      .mockImplementation(() => {
+        return (dispatch) => {
+        };
+      });
+    button.simulate('click');
+    expect(spyHistory).toHaveBeenCalledWith('/');
+  });
 });
 
