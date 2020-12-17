@@ -1,0 +1,10 @@
+asset/
+error_log/
+result/
+*.pyc
+*.log
+*.pot
+__pycache__/
+
+
+*/__pycache__/
