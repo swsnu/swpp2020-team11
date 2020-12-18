@@ -48,8 +48,8 @@ class MainPage extends Component {
           console.log(error);
         }, {
           enableHighAccuracy: false,
-          maximumAge: 100,
-          timeout: 1000,
+          maximumAge: 15000,
+          timeout: 15000,
         });
     } else {
       console.log('GPS를 지원하지 않습니다');

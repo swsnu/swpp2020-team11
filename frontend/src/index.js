@@ -10,7 +10,7 @@ import 'antd/dist/antd.css';
 import axios from 'axios';
 import { PersistGate } from 'redux-persist/integration/react';
 
-axios.defaults.baseURL = 'https://backend.asapgo.net/';
+axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';

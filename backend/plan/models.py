@@ -18,6 +18,7 @@ class Plan(models.Model):
     ended_at = models.DateTimeField(null=True)
     feedback = models.FloatField(null=True)  # temporary
     total_distance = models.IntegerField(null=True)
+
     @classmethod
     def get_today_plan(cls, user):
         today_min = datetime.datetime.combine(datetime.datetime.today(), datetime.time.min)

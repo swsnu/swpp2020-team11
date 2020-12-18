@@ -23,3 +23,5 @@ CORS_ORIGIN_WHITELIST = ["https://trip.asapgo.net"]
 CSRF_TRUSTED_ORIGINS = ["trip.asapgo.net"]
 
 S3_IMAGE_STORAGE = "asapgo-development"
+
+LAMBDA_FUNCTION_URL = "https://bk4wzr9t1i.execute-api.ap-northeast-2.amazonaws.com/default/asapgo-suggest"

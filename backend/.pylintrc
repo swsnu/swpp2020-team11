@@ -1,6 +1,6 @@
 [MASTER]
 # disable docstring
-disable=C0114,C0115,C0116
+disable=C0114,C0115,C0116,W0703,R0914
 
 # ignore migration file
 ignore-patterns=\d{4}_.*?.py
