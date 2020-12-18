@@ -35,17 +35,12 @@ RUN cd asapgo-suggest && \
     -DCMAKE_PREFIX_PATH=/out -DCMAKE_CXX_COMPILER=g++
 #     make && make aws-lambda-package-asapgo-suggest
 
-CMD ['/bin/sh', 'aws', 'lambda', 'update-function-code', \
-     '--function-name', 'asapgo-suggest', \
-     '--zip-file', 'fileb://asapgo-suggest/build/asapgo-suggest.zip']
-
-
 # docker run
 
 # docker run -it \
-# -e AWS_DEFAULT_REGION=ap-northeast-2 \
-# -e AWS_ACCESS_KEY_ID=AKIARBJSVL2VQUOMMS2A \
-# -e AWS_SECRET_ACCESS_KEY=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 \
+# -e AWS_DEFAULT_REGION= \
+# -e AWS_ACCESS_KEY_ID= \
+# -e AWS_SECRET_ACCESS_KEY= \
 # aws_lambda_cpp /bin/bash
 
 # deploy
