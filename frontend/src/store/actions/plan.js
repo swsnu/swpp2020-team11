@@ -50,7 +50,7 @@ export const getPlan = (level, headCount, lat, long) => {
   };
 };
 
-export const makeReservation = () => {
+export const makeReservation = (location) => {
   return (dispatch) => {
     return axios.post(`/api/plan/reservation/`, location)
       .then((res) => {
