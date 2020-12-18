@@ -37,7 +37,7 @@ def time_distance(lat, long, places, mode=0):
         url_des = url_des + str(place['lat']) + ',' + str(place['lng'])
         if index != len(places) - 1:
             url_des = url_des + '|'
-    url_base = url_base + url_origin + '&destinations=' + url_des + '&region=KR&language=ko&key=' + REACT_APP_API_KEY
+    url_base = f'{url_base}{url_origin}&destinations={url_des}&region=KR&language=ko&key={REACT_APP_API_KEY}'
     response = requests.get(url_base).json()
     rows = response.get('rows', None)
     for index, row in enumerate(rows):

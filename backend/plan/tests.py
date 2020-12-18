@@ -177,8 +177,10 @@ class RervationTest(APITestCase):
     def _setup_database(self):
         setup_plan_database()
 
+    @patch('plan.views.time_distance')
     @responses.activate
-    def test_post_with_valid_request(self):
+    def test_post_with_valid_request(self, time_distance):
+        time_distance.return_value = ([{'value': 1}], [{'value': 1}])
         responses.add(responses.GET, 'https://maps.googleapis.com/maps/api/distancematrix/json',
                       body='{ "rows": [{ "elements": [{"distance": { "value": 1 }, '
                            '"duration": { "value" : 1 } }] }, { "elements": [{"distance": { "value": 1 }, '
