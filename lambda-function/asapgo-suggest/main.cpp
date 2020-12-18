@@ -37,7 +37,7 @@ public:
 
     Aws::String json_dump() {
       Aws::SimpleStringStream ss;
-      ss << "{\"id\": " << id << "}";
+      ss << "{\"id\": " << id << ", \"lng\": " << lng << ", \"lat\": " << lat << "}";
       return ss.str();
     };
 };
@@ -181,8 +181,7 @@ static invocation_response my_handler(invocation_request const& req) {
   }
   int i = candiate_count - 1;
   Array<Aws::String> result(candiate_count);
-  while (!p
-  lan_min_heap.empty()) {
+  while (!plan_min_heap.empty()) {
     Plan plan = plan_min_heap.top();
     result[i] = plan.json_dump();
     plan_min_heap.pop();

@@ -1,8 +1,6 @@
-import logging
 import os
 
 import boto3
-from botocore.exceptions import ClientError
 
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -24,8 +22,7 @@ def create_presigned_post(bucket_name, object_name,
                                                      Fields=fields,
                                                      Conditions=conditions,
                                                      ExpiresIn=expiration)
-    except ClientError as err:
-        logging.error(err)
+    except Exception:
         return None
 
     # The response contains the presigned URL and required fields

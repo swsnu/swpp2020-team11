@@ -1,6 +1,8 @@
 import json
 import datetime
 import os
+from unittest.mock import patch
+
 import responses
 from django.test import TestCase
 from django.utils import timezone
@@ -38,24 +40,23 @@ def setup_plan_database():
     now = timezone.make_aware(datetime.datetime.now())
     taxi = Taxi(**stub_taxi)
     taxi.save()
-    taxi_reservation = TransportationReservation(taxi=taxi, reservation_name='nickname',
-                                                 reservation_time=now, status=2, tot_price=50000,
-                                                 head_count=2)
-    taxi_reservation.save()
+    taxi_reservation = TransportationReservation.objects.create(taxi=taxi, reservation_name='nickname',
+                                                                reservation_time=now, status=2, tot_price=50000,
+                                                                head_count=2)
     user = User.objects.first()
-    plan = Plan(user=user, head_count=2, created_at=now,
-                started_at=now, ended_at=now, total_distance=1000)
-    plan.save()
+    plan = Plan.objects.create(user=user, head_count=2, created_at=now,
+                               started_at=now, ended_at=now, total_distance=1000)
+    feature = Features.objects.create(feature_name='feature1', status=1)
     place = Place.objects.create(latitude=37.4772964, longitude=126.958394, type='음식',
                                  name='food', image_key='test1.jpb', status=1, avg_score=-1)
+    place.features.add(feature)
     Place.objects.create(latitude=37.47964, longitude=126.9594, type='음식',
-                            name='food', image_key='test2.jpb', status=1, avg_score=-1)
+                         name='food', image_key='test2.jpb', status=1, avg_score=-1)
     place_reservation = PlaceReservation.objects.create(place=place,
                                                         reservation_name='food', status=1, head_count=1,
                                                         tot_price=10000)
-    reservation = HalfDayOffReservation(plan=plan, activity=place_reservation, dinner=place_reservation,
-                                        scenary=place_reservation,  transportation=taxi_reservation)
-    reservation.save()
+    HalfDayOffReservation.objects.create(plan=plan, activity=place_reservation, dinner=place_reservation,
+                                         scenary=place_reservation, transportation=taxi_reservation)
 
 
 def setup_review_database():
@@ -114,41 +115,53 @@ class PlanNotAllowedTestCase(NotAllowedTestCase):
         {'url': 'review/1/', 'method': 'put'},
     ]
 
+
 class PlanTest(APITestCase):
     url = '/api/plan/'
 
     def _setup_database(self):
         Taxi(**stub_taxi).save()
+        setup_plan_database()
 
-    @responses.activate
-    def test_post_with_valid_request(self):
-        distance = '{"distance": { "value": 1 }, "duration": { "value" : 1 } }'
-        element = '{ "elements": [' + distance + ', ' + distance + ', ' + distance + '] }'
-        row = '{ "rows": [' + element + ', ' + element + ',' + element + '] }'
-        responses.add(responses.GET, 'https://maps.googleapis.com/maps/api/distancematrix/json',
-                  body=row, status=200,
-                  content_type='application/json')
-        Place.objects.create(latitude=37.4772964, longitude=126.958394, type='음식',
-                                 name='food', image_key='test1.jpb',
-                                 status=1, avg_score=-1)
-        Place.objects.create(latitude=37.47964, longitude=126.9594, type='음식점',
-                                  name='food', image_key='test2.jpb',
-                                  status=1, avg_score=-1)
-        Place.objects.create(latitude=37.47729, longitude=126.939, type='음식점',
-                                  name='food', image_key='test3.jpb',
-                                  status=1, avg_score=-1)
+    @patch('plan.views.time_distance')
+    @patch('plan.views.suggestion_algorithm')
+    def test_post_with_valid_request(self, suggestion_algorithm, time_distance):
+        Plan.objects.all().delete()
+        time_distance.return_value = ([{'value': 1}], [{'value': 1}])
+
+        suggestion_algorithm.return_value = {
+            'result': [
+                "{\"distance\": 14, \"travel_period\": 1.66268, \"satisfaction\": 49.8805, "
+                "\"activity\": {\"id\": 1, \"lng\": 39, \"lat\": 127}, \"dinner\": {\"id\": 1, "
+                "\"lng\": 39.04, \"lat\": 127.04}, \"scenery\": {\"id\": 1, \"lng\": 39.09, "
+                "\"lat\": 127.09}}"
+            ]
+        }
         data = {
             'level': 1,
             'headCount': 2,
             'lat': 1,
-            'long' : 1,
+            'long': 1,
         }
         response = self.client.post(self.url, json.dumps(data),
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
 
+    @patch('plan.views.suggestion_algorithm')
+    def test_post_with_not_valid_plan_request(self, suggestion_algorithm):
+        Plan.objects.all().delete()
+        suggestion_algorithm.return_value = None
+        data = {
+            'level': 1,
+            'headCount': 2,
+            'lat': 1,
+            'long': 1,
+        }
+        response = self.client.post(self.url, json.dumps(data),
+                                    content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
+        self.assertEqual(response.status_code, 204)
+
     def test_post_with_already_exist_plan(self):
-        setup_plan_database()
         data = {
             'level': 1,
             'headCount': 2,
@@ -156,6 +169,7 @@ class PlanTest(APITestCase):
         response = self.client.post(self.url, json.dumps(data),
                                     content_type='application/json', HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
+
 
 class RervationTest(APITestCase):
     url = '/api/plan/reservation/'
@@ -166,11 +180,12 @@ class RervationTest(APITestCase):
     @responses.activate
     def test_post_with_valid_request(self):
         responses.add(responses.GET, 'https://maps.googleapis.com/maps/api/distancematrix/json',
-                body='{ "rows": [{ "elements": [{"distance": { "value": 1 }, "duration": { "value" : 1 } }] },'\
-                    '{ "elements": [{"distance": { "value": 1 }, "duration": { "value" : 1 } }, {"distance": { '\
-                    '"value": 1 }, "duration": { "value" : 1 } }] }] }', status=200,
-                content_type='application/json')
-        data = {'lat': 1, 'lng': 1,}
+                      body='{ "rows": [{ "elements": [{"distance": { "value": 1 }, '
+                           '"duration": { "value" : 1 } }] }, { "elements": [{"distance": { "value": 1 }, '
+                           '"duration": { "value" : 1 } }, {"distance": { ' \
+                           '"value": 1 }, "duration": { "value" : 1 } }] }] }', status=200,
+                      content_type='application/json')
+        data = {'lat': 1, 'lng': 1, }
         response = self.client.post(self.url, json.dumps(data), content_type='application/json',
                                     HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(response.status_code, 200)
@@ -270,7 +285,7 @@ class PlaceRecommendFunctionTest(TestCase):
             for j, feature in enumerate(features):
                 Preference.objects.create(personality=personality_type, feature=feature, weight=i + 0.1 * j)
 
-        for i, place_type in enumerate(['food', 'scenary', 'activity']):
+        for i, place_type in enumerate(['food', 'scenery', 'activity']):
             for j in range(3):
                 place = Place.objects.create(latitude=36.4772964 + i, longitude=125.958394 + j, type=place_type,
                                              name=f'{place_type}{j}', image_key='', status=1, avg_score=-1)
@@ -281,13 +296,13 @@ class PlaceRecommendFunctionTest(TestCase):
     def test_valid_case(self):
         user_id = User.objects.first().id
         result = place_recommend(user_id, 37.47964, 126.9594, 1.2)
-        self.assertEqual(len(result.get('food', [])), 1)
-        self.assertEqual(len(result.get('scenary', [])), 3)
+        self.assertEqual(len(result.get('dinner', [])), 1)
+        self.assertEqual(len(result.get('scenery', [])), 3)
         self.assertEqual(len(result.get('activity', [])), 1)
 
     def test_no_valid_place(self):
         user_id = User.objects.first().id
         result = place_recommend(user_id, 1000, 10000, 1.2)
-        self.assertEqual(len(result.get('food', [])), 0)
-        self.assertEqual(len(result.get('scenary', [])), 0)
+        self.assertEqual(len(result.get('dinner', [])), 0)
+        self.assertEqual(len(result.get('scenery', [])), 0)
         self.assertEqual(len(result.get('activity', [])), 0)

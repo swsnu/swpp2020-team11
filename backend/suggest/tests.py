@@ -125,4 +125,3 @@ class ImageUploadPresignedUrl(APITestCase):
                                     HTTP_X_CSRFTOKEN=self.csrftoken)
         self.assertEqual(create_presigned_post.call_count, 1)
         self.assertEqual(response.status_code, 400)
-        

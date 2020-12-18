@@ -26,4 +26,6 @@ CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 
-S3_IMAGE_STORAGE = "asapgo-development"
+S3_IMAGE_STORAGE = ""
+
+LAMBDA_FUNCTION_URL = "http://lambda_mock.com"

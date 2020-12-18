@@ -1,45 +1,18 @@
 import json
 import random
-import os
-import requests
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 
 from common.util.auth_util import login_required
-from common.util.http_util import HttpStatusCode
+from common.util.http_util import HttpStatusCode, suggestion_algorithm, time_distance
 
 from account.models import User
 from .models import Plan, HalfDayOffReservation, Review, Place, Taxi, TransportationReservation, PlaceReservation
+from .service import place_recommend
 
-REACT_APP_API_KEY = os.getenv('REACT_APP_API_KEY')
 
-def time_distance(lat, long, places, mode = 0):
-    url_base = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=transit&origins='
-    distance = []
-    time = []
-    url_origin = str(lat) + ',' + str(long)
-    url_des = ''
-    for index, place in enumerate(places):
-        if index < len(places)-1:
-            url_origin = url_origin + '|' + str(place.latitude) + ',' + str(place.longitude)
-        url_des = url_des + str(place.latitude) + ',' + str(place.longitude)
-        if index != len(places)-1:
-            url_des = url_des + '|'
-    url_base = url_base + url_origin + '&destinations=' + url_des + '&region=KR&language=ko&key='+REACT_APP_API_KEY
-    response = requests.get(url_base).json()
-    rows = response.get('rows', None)
-    for index, row in enumerate(rows):
-        element = row.get('elements', None)
-        if index == 0 and mode == 0:
-            distance.append(element[2].get('distance', None))
-            time.append(element[2].get('duration', None))
-        distance.append(element[index].get('distance', None))
-        time.append(element[index].get('duration', None))
-    return distance, time
-
-# dummy plan function for test
 @ensure_csrf_cookie
 @require_http_methods(['POST'])
 @login_required
@@ -49,42 +22,42 @@ def suggested_plan(request):
         req = json.loads(request.body.decode())
         head_count = req.get('headCount', 1)
         taxi = Taxi.get_reservable_taxi()
-        taxi_reservation = TransportationReservation(taxi=taxi, reservation_name=request.user.nickname,
-                                                     reservation_time=timezone.now(), status=2, tot_price=50000,
-                                                     head_count=head_count)
-        taxi_reservation.save()
-        plan = Plan(user=request.user, head_count=head_count, created_at=timezone.now(),
-                    started_at=timezone.now(), ended_at=timezone.now())
-        plan.save()
-        while True:
-            activity_id = random.randint(0,Place.objects.all().count()-1)
-            scene_id = random.randint(0,Place.objects.all().count()-1)
-            activity = Place.objects.all()[activity_id]
-            scene = Place.objects.all()[scene_id]
-            if activity_id != scene_id: #and activity.type != '음식점' and scene.type != '음식점':
-                break
-        dinner = Place.objects.filter(type='음식점')
-        dinner_id = random.randint(0, dinner.count()-1)
-        dinner = dinner[dinner_id]
-        activity_re = PlaceReservation(place=activity, reservation_name=request.user.nickname,
-                                        status=1, head_count=head_count, tot_price=10000)
-        activity_re.save()
-        dinner_re = PlaceReservation(place=dinner, reservation_name=request.user.nickname,
-                                        status=1, head_count=head_count, tot_price=10000)
-        dinner_re.save()
-        scene_re = PlaceReservation(place=scene, reservation_name=request.user.nickname,
-                                    status=1, head_count=head_count, tot_price=10000)
-        scene_re.save()
-        reservation = HalfDayOffReservation(plan=plan, transportation=taxi_reservation,
-                                            activity=activity_re, dinner=dinner_re, scenary=scene_re)
-        reservation.save()
+        taxi_reservation = TransportationReservation.objects.create(taxi=taxi, reservation_name=request.user.nickname,
+                                                                    reservation_time=timezone.now(), status=2,
+                                                                    tot_price=50000,
+                                                                    head_count=head_count)
+        plan = Plan.objects.create(user=request.user, head_count=head_count, created_at=timezone.now(),
+                                   started_at=timezone.now(), ended_at=timezone.now())
+        candidates = place_recommend(request.user.id, req['lat'], req['long'], 100)
+        candidates['current_location'] = {
+            'lng': req['long'],
+            'lat': req['lat']
+        }
+        candidates['time_limit'] = 12
+        result = suggestion_algorithm(candidates)
+        if result is None:
+            return HttpResponse(status=HttpStatusCode.NoContent)
+        routes = result.get('result', [])
+        route = json.loads(routes[0])
+        activity_re = PlaceReservation.objects.create(place_id=route['activity']['id'],
+                                                      reservation_name=request.user.nickname,
+                                                      status=1, head_count=head_count, tot_price=10000)
+        dinner_re = PlaceReservation.objects.create(place_id=route['dinner']['id'],
+                                                    reservation_name=request.user.nickname,
+                                                    status=1, head_count=head_count, tot_price=10000)
 
-        distance, time = time_distance(req.get('lat', None), req.get('long', None), [activity, dinner, scene])
+        scene_re = PlaceReservation.objects.create(place_id=route['scenery']['id'],
+                                                   reservation_name=request.user.nickname,
+                                                   status=1, head_count=head_count, tot_price=10000)
+
+        HalfDayOffReservation.objects.create(plan=plan, transportation=taxi_reservation,
+                                                           activity=activity_re, dinner=dinner_re, scenary=scene_re)
+        distance, time = time_distance(req['lat'], req['long'], [route['activity'], route['dinner'], route['scenery']])
         total_distance = 0
         total_second = 0
         for dist, each_time in zip(distance, time):
-            total_distance += dist.get('value', None)
-            total_second += each_time.get('value', None)
+            total_distance += dist.get('value', 0)
+            total_second += each_time.get('value', 0)
         plan.ended_at = plan.ended_at + timezone.timedelta(seconds=total_second)
         plan.total_distance = total_distance
         plan.save()
@@ -101,7 +74,7 @@ def suggested_plan(request):
     for place in [act, din, sce]:
         for features in place.features.all():
             tag.append(features.feature_name)
-    budget = 3800*3 + int(distance/132)*100
+    budget = 3800 * 3 + int(distance / 132) * 100
     result = {
         'imageUrls': [
             act.image_key,
@@ -159,9 +132,8 @@ def review(request):
     new_review = []
     for i in reviews:
         place = places.get(id=i.get('place'))
-        review_save = Review(user=user, place=place, plan=plan_review,
-                             score=i.get('score'), content=i.get('content'))
-        review_save.save()
+        review_save = Review.objects.create(user=user, place=place, plan=plan_review,
+                                            score=i.get('score'), content=i.get('content'))
         new_review.append(review_save.asdict())
     return JsonResponse({'review': new_review}, status=HttpStatusCode.Created)
 
@@ -200,23 +172,11 @@ def review_detail(request, ids):
     modify_review.save()
     return JsonResponse(modify_review.asdict(), status=HttpStatusCode.Created)
 
-class Arrive:
-    def __init__(self, lat, long):
-        self.latitude = lat
-        self.longitude = long
-
-    def set_position(self, lat, long):
-        self.latitude = lat
-        self.longitude = long
-
-    def get_position(self):
-        return self.latitude, self.longitude
 
 @ensure_csrf_cookie
 @require_http_methods(['POST'])
 @login_required
 def plan_reservation(request):
-    # it should be 꺼내오기 from database
     arrival_location = json.loads(request.body.decode())
     plan = Plan.get_today_plan(request.user)
     trans_reservation = plan.reservation.transportation
@@ -231,8 +191,7 @@ def plan_reservation(request):
         "lat": arrival_location.get('lat', None) + x_diff,
         "lng": arrival_location.get('lng', None) + y_diff,
     }
-    arrive = Arrive(arrival_location.get("lat", None), arrival_location.get("lng", None))
-    dist, time = time_distance(current_location["lat"], current_location["lng"], [arrive], mode = 1)
+    dist, time = time_distance(current_location["lat"], current_location["lng"], [arrival_location], mode=1)
     arrive_time = plan.started_at + timezone.timedelta(seconds=time[0].get("value", None))
     taxi_information = {
         "taxiImage": taxi_image,
