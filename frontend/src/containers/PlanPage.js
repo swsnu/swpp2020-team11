@@ -58,7 +58,7 @@ class PlanPage extends Component {
         <Button
           className="reservation-button"
           type="primary"
-          onClick={this.props.onReservation}
+          onClick={() => this.props.onReservation(this.props.position)}
         >
           예약하기
         </Button>
